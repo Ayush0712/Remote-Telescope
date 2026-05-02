@@ -70,13 +70,6 @@ window.addEventListener('resize', () => {
 // =============================================
 // 2. GALLERY (load images & lightbox)
 // =============================================
-const galleryImages = [
-    { src: 'https://placehold.co/600x400/1a1f35/6C63FF?text=Orion+Nebula', title: 'Orion Nebula (M42)' },
-    { src: 'https://placehold.co/600x400/1a1f35/e942f5?text=Andromeda+Galaxy', title: 'Andromeda Galaxy (M31)' },
-    { src: 'https://placehold.co/600x400/1a1f35/6C63FF?text=Horsehead+Nebula', title: 'Horsehead Nebula' },
-    { src: 'https://placehold.co/600x400/1a1f35/e942f5?text=Pleiades', title: 'Pleiades (M45)' },
-    { src: 'https://placehold.co/600x400/1a1f35/6C63FF?text=Moon+Crater', title: 'Lunar Crater Plato' }
-];
 const galleryContainer = document.getElementById('gallery-container');
 if (galleryContainer) {
     galleryContainer.innerHTML = galleryImages.map(img => `
@@ -109,6 +102,55 @@ if (homeGrid) {
     }
     homeGrid.innerHTML = gridImages.map(img => `<img src="${img.src}" alt="${img.title}" loading="lazy">`).join('');
 }
+
+// =============================================
+// DYNAMIC GALLERY LOADER (from gallery-data.json)
+// =============================================
+async function loadGalleryData() {
+    try {
+        const response = await fetch('gallery-data.json');
+        if (!response.ok) throw new Error('Failed to load gallery data');
+        const images = await response.json();
+        // Populate gallery page (all images)
+        const galleryContainer = document.getElementById('gallery-container');
+        if (galleryContainer) {
+            galleryContainer.innerHTML = images.map(img => `
+                <div class="gallery-card">
+                    <img src="${img.src}" alt="${img.title}" onclick="openLightbox('${img.src}', '${img.title} (${img.photographer || ''})')">
+                    <p style="text-align:center; margin-top:0.5rem;">${img.title}</p>
+                </div>
+            `).join('');
+        }
+
+        // Populate home page grid: 3 columns × 8 rows = 24 images
+        const homeGrid = document.getElementById('home-gallery-grid');
+        if (homeGrid) {
+            const gridImages = images.slice(0, 24); // take first 24 (or all if less)
+            homeGrid.innerHTML = gridImages.map(img => `
+                <img src="${img.src}" alt="${img.title}" loading="lazy">
+            `).join('');
+        }
+
+        // Optional: also fill the old "Recent Captures" feed if still present
+        const homeFeed = document.getElementById('home-feed');
+        if (homeFeed) {
+            const feedImages = images.slice(0, 4);
+            homeFeed.innerHTML = feedImages.map(img => `
+                <div class="gallery-card">
+                    <img src="${img.src}" alt="${img.title}" onclick="window.location.href='gallery.html'">
+                </div>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Could not load gallery data:', error);
+        // Optional fallback: display placeholder error
+        const containers = document.querySelectorAll('#gallery-container, #home-gallery-grid');
+        containers.forEach(c => c.innerHTML = '<p>Gallery images could not be loaded.</p>');
+    }
+}
+
+// Call it immediately after DOM is ready
+document.addEventListener('DOMContentLoaded', loadGalleryData);
 // =============================================
 // 3. BLOG (dynamic posts)
 // =============================================
