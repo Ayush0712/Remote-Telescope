@@ -248,9 +248,30 @@ if (weatherGrid) {
     }
     weatherGrid.innerHTML = html;
 }
+// =============================================
+// 6. MOBILE MENU TOGGLE
+// =============================================
+const menuToggle = document.getElementById('menu-toggle');
+const menuOverlay = document.getElementById('menu-overlay');
+
+if (menuToggle && menuOverlay) {
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        menuOverlay.classList.toggle('active');
+    });
+
+    // Close menu when an overlay link is clicked
+    const overlayLinks = document.querySelectorAll('.overlay-link');
+    overlayLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        });
+    });
+}
 
 // =============================================
-// 6. CONTACT FORM (demo submit)
+// 7. CONTACT FORM (demo submit)
 // =============================================
 document.getElementById('contact-form')?.addEventListener('submit', e => {
     e.preventDefault();
