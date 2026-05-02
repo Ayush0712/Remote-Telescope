@@ -24,6 +24,15 @@ body {
     position: relative;
 }
 
+body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--bg-deep);
+    z-index: -2;
+}
+
 /* Falling Stars Canvas */
 #stars-canvas {
     position: fixed;
@@ -32,7 +41,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    opacity: 0.85;
+    opacity: 1.0;
 }
 
 /* Navigation */
