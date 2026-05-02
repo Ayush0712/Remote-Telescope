@@ -1,0 +1,24 @@
+[
+  {
+    "src": "images/orion.jpg",
+    "title": "Orion Nebula (M42)",
+    "photographer": "Ayush Sharma",
+    "target": "Orion Nebula",
+    "equipment": "Takahashi FSQ-106 | ASI2600MC Pro"
+  },
+  {
+    "src": "images/andromeda.jpg",
+    "title": "Andromeda Galaxy (M31)",
+    "photographer": "Priya Singh",
+    "target": "Andromeda Galaxy",
+    "equipment": "Celestron RASA 8 | ASI2600MC Pro"
+  },
+  {
+    "src": "images/horsehead.jpg",
+    "title": "Horsehead Nebula",
+    "photographer": "Arjun Mehta",
+    "target": "Horsehead Nebula",
+    "equipment": "Takahashi FSQ-106 | ASI290MC"
+  }
+  // ... add more entries – for the home 3×8 grid, make at least 24 entries
+]
