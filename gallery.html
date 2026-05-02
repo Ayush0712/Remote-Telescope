@@ -1,49 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gallery | RemoteScope</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | RemoteScope</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <canvas id="starfield-canvas"></canvas>
-  <nav id="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="logo">🌌 RemoteScope</a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="gallery.html" class="active">Gallery</a></li>
-        <li><a href="pricing.html">Book a Slot</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-      <a href="pricing.html" class="btn-primary">BOOK NOW</a>
+    <canvas id="stars-canvas"></canvas>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="booking.html">Book Now</a></li>
+                <li><a href="gallery.html" class="active">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="page-hero">
+        <h1>Cosmic Gallery</h1>
+        <p>Stunning images captured through our remote system.</p>
+    </section>
+
+    <div id="gallery-container" class="masonry-grid"></div>
+
+    <div id="lightbox" class="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img id="lightbox-img" src="">
+        <p id="lightbox-caption"></p>
     </div>
-  </nav>
 
-  <section class="page-hero">
-    <h1>The Cosmic Gallery</h1>
-    <p>Stunning captures by our community and the RemoteScope system.</p>
-  </section>
+    <footer>
+        <p>© 2026 RemoteScope. All rights reserved.</p>
+    </footer>
 
-  <div id="gallery-container" class="masonry-grid">
-    <!-- Populated by script.js -->
-  </div>
-
-  <div id="lightbox" class="lightbox">
-    <span class="close-lightbox">&times;</span>
-    <div class="lightbox-content">
-      <img id="lightbox-img" src="" alt="">
-      <div class="lightbox-caption" id="lightbox-caption"></div>
-    </div>
-  </div>
-
-  <footer>
-    <p>© 2026 RemoteScope</p>
-  </footer>
-  <button id="back-to-top" class="back-to-top">↑</button>
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
