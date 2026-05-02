@@ -265,3 +265,63 @@ if (menuToggle && menuOverlay) {
         });
     });
 }
+// =============================================
+// 8. DYNAMIC HERO IMAGES (from hero-images.json)
+// =============================================
+async function loadHeroImages() {
+    const heroImgElements = document.querySelectorAll('.hero-images img');
+    if (!heroImgElements.length) return;
+
+    // Default fallback (shown if no image file works)
+    const fallback = 'https://placehold.co/150x150/0b0f19/6C63FF?text=No+Image';
+
+    try {
+        const response = await fetch('hero-images.json');
+        if (!response.ok) throw new Error('Could not load hero images config');
+        const baseNames = await response.json();
+
+        // Only the first 4 images needed
+        const names = baseNames.slice(0, 4);
+        let index = 0;
+
+        // For each <img> element, try to load named file with different extensions
+        heroImgElements.forEach((img, i) => {
+            const name = names[i];
+            if (!name) {
+                img.src = fallback;
+                return;
+            }
+
+            const extensions = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
+            let extIndex = 0;
+
+            function tryNextExtension() {
+                if (extIndex >= extensions.length) {
+                    // All extensions failed, use fallback
+                    img.src = fallback;
+                    return;
+                }
+                const ext = extensions[extIndex];
+                const url = `images/${name}.${ext}`;
+                const testImg = new Image();
+                testImg.onload = () => {
+                    img.src = url;   // Success, set as src
+                };
+                testImg.onerror = () => {
+                    extIndex++;
+                    tryNextExtension();
+                };
+                testImg.src = url;
+            }
+
+            tryNextExtension();
+        });
+
+    } catch (error) {
+        console.warn('Hero images could not be loaded, using fallback:', error);
+        heroImgElements.forEach(img => img.src = fallback);
+    }
+}
+
+// Call it on page load
+document.addEventListener('DOMContentLoaded', loadHeroImages);
