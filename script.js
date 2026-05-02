@@ -1,172 +1,227 @@
-// === 1. Starfield Animation (Canvas) ===
-const canvas = document.getElementById('starfield-canvas');
+// =============================================
+// 1. FALLING STARS CANVAS (shooting stars)
+// =============================================
+const canvas = document.getElementById('stars-canvas');
 const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 let stars = [];
-for (let i = 0; i < 250; i++) {
-  stars.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    radius: Math.random() * 1.5 + 0.5,
-    speed: Math.random() * 0.8 + 0.2,
-    opacity: Math.random(),
-  });
+for (let i = 0; i < 200; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5 + 0.5,
+        speed: Math.random() * 0.8 + 0.2,
+        opacity: Math.random(),
+        blink: Math.random() * 0.02
+    });
 }
+// Shooting stars
+let shootingStars = [];
 
 function drawStars() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  stars.forEach(s => {
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 255, 255, ${s.opacity})`;
-    ctx.fill();
-    s.y += s.speed;
-    if (s.y > canvas.height + 5) {
-      s.y = -5;
-      s.x = Math.random() * canvas.width;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Static stars
+    stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${s.opacity})`;
+        ctx.fill();
+        s.y += s.speed;
+        if (s.y > canvas.height + 5) {
+            s.y = -5;
+            s.x = Math.random() * canvas.width;
+        }
+    });
+    // Shooting stars
+    if (Math.random() < 0.02) {
+        shootingStars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * (canvas.height / 2),
+            len: Math.random() * 80 + 20,
+            speed: Math.random() * 10 + 5,
+            opacity: 1
+        });
     }
-  });
-  requestAnimationFrame(drawStars);
+    shootingStars.forEach((ss, index) => {
+        ctx.beginPath();
+        ctx.moveTo(ss.x, ss.y);
+        ctx.lineTo(ss.x - ss.len, ss.y + ss.len/2);
+        ctx.strokeStyle = `rgba(255,255,255,${ss.opacity})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ss.x -= ss.speed;
+        ss.y += ss.speed/2;
+        ss.opacity -= 0.02;
+        if (ss.opacity <= 0 || ss.x < 0 || ss.y > canvas.height) {
+            shootingStars.splice(index, 1);
+        }
+    });
+    requestAnimationFrame(drawStars);
 }
 drawStars();
-
 window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  stars = stars.map(s => ({...s, x: Math.random()*canvas.width, y: Math.random()*canvas.height }));
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = stars.map(s => ({...s, x: Math.random()*canvas.width, y: Math.random()*canvas.height }));
 });
 
-// === 2. Scroll Reveal (Intersection Observer) ===
-const reveals = document.querySelectorAll('.reveal');
-const revealObserver = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
-}, { threshold: 0.15 });
-reveals.forEach(el => revealObserver.observe(el));
-
-// === 3. Back to Top Button ===
-const backBtn = document.getElementById('back-to-top');
-window.addEventListener('scroll', () => {
-  backBtn?.classList.toggle('visible', window.scrollY > 400);
-});
-backBtn?.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
-
-// === 4. Gallery Loader (shared between home and gallery page) ===
+// =============================================
+// 2. GALLERY (load images & lightbox)
+// =============================================
 const galleryImages = [
-  { src:'https://placehold.co/600x400/1a1f35/6C63FF?text=Orion+Nebula', title:'Orion Nebula (M42)', equipment:'Takahashi FSQ-106 | 2h', },
-  { src:'https://placehold.co/600x400/1a1f35/e942f5?text=Andromeda+Galaxy', title:'Andromeda Galaxy (M31)', equipment:'Celestron RASA 8 | 4h', },
-  { src:'https://placehold.co/600x400/1a1f35/6C63FF?text=Horsehead+Nebula', title:'Horsehead Nebula', equipment:'Takahashi FSQ-106 | 3h', },
-  { src:'https://placehold.co/600x400/1a1f35/e942f5?text=Pleiades', title:'Pleiades (M45)', equipment:'ASI2600MC Pro | 1.5h', },
-  { src:'https://placehold.co/600x400/1a1f35/6C63FF?text=Moon+Crater', title:'Lunar Crater Plato', equipment:'ASI290MC | 500 frames', }
+    { src: 'https://placehold.co/600x400/1a1f35/6C63FF?text=Orion+Nebula', title: 'Orion Nebula (M42)' },
+    { src: 'https://placehold.co/600x400/1a1f35/e942f5?text=Andromeda+Galaxy', title: 'Andromeda Galaxy (M31)' },
+    { src: 'https://placehold.co/600x400/1a1f35/6C63FF?text=Horsehead+Nebula', title: 'Horsehead Nebula' },
+    { src: 'https://placehold.co/600x400/1a1f35/e942f5?text=Pleiades', title: 'Pleiades (M45)' },
+    { src: 'https://placehold.co/600x400/1a1f35/6C63FF?text=Moon+Crater', title: 'Lunar Crater Plato' }
 ];
-
-function createGalleryCard(img) {
-  return `<div class="gallery-card reveal">
-    <img src="${img.src}" alt="${img.title}" onclick="openLightbox('${img.src}', '${img.title} (${img.equipment})')">
-    <p style="text-align:center; margin-top:0.5rem;">${img.title}</p>
-  </div>`;
-}
-
-// Fill gallery page if present
 const galleryContainer = document.getElementById('gallery-container');
 if (galleryContainer) {
-  galleryContainer.innerHTML = galleryImages.map(createGalleryCard).join('');
+    galleryContainer.innerHTML = galleryImages.map(img => `
+        <div class="gallery-card">
+            <img src="${img.src}" alt="${img.title}" onclick="openLightbox('${img.src}', '${img.title}')">
+        </div>
+    `).join('');
 }
-
-// Home page feed (first 4 images)
-const homeFeed = document.getElementById('home-feed');
-if (homeFeed) {
-  homeFeed.innerHTML = galleryImages.slice(0,4).map(img => `
-    <div class="gallery-card"><img src="${img.src}" alt="${img.title}" onclick="window.location.href='gallery.html'"></div>
-  `).join('');
-}
-
-// Lightbox
 function openLightbox(src, caption) {
-  const lb = document.getElementById('lightbox');
-  if (!lb) return;
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox-caption').textContent = caption;
-  lb.classList.add('active');
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox-caption').textContent = caption;
+    document.getElementById('lightbox').classList.add('active');
 }
-document.querySelector('.close-lightbox')?.addEventListener('click', ()=>{
-  document.getElementById('lightbox').classList.remove('active');
+document.querySelector('.close-lightbox')?.addEventListener('click', () => {
+    document.getElementById('lightbox').classList.remove('active');
 });
 
-// === 5. Booking Engine (pricing.html) ===
-const slotContainer = document.getElementById('slot-container');
-if (slotContainer) {
-  // Generate some demo slots
-  const slots = [
-    { time:'21:00', utc:'2026-05-04T21:00:00Z', available:true },
-    { time:'22:00', utc:'2026-05-04T22:00:00Z', available:true },
-    { time:'23:00', utc:'2026-05-04T23:00:00Z', available:false },
-    { time:'00:00', utc:'2026-05-05T00:00:00Z', available:true },
-    { time:'01:00', utc:'2026-05-05T01:00:00Z', available:true },
-    { time:'02:00', utc:'2026-05-05T02:00:00Z', available:false },
-    { time:'03:00', utc:'2026-05-05T03:00:00Z', available:true },
-    { time:'04:00', utc:'2026-05-05T04:00:00Z', available:true }
-  ];
-
-  let selectedSlot = null;
-
-  slots.forEach(slot => {
-    const div = document.createElement('div');
-    div.className = `slot-item ${!slot.available ? 'unavailable' : ''}`;
-    div.textContent = slot.time + ' UTC';
-    div.addEventListener('click', () => {
-      if (!slot.available) return;
-      document.querySelectorAll('.slot-item').forEach(el => el.classList.remove('selected'));
-      div.classList.add('selected');
-      selectedSlot = slot;
-      // Show payment form
-      const paymentForm = document.getElementById('payment-form');
-      paymentForm.style.display = 'block';
-      // Update UPI link
-      const upiLink = document.getElementById('upi-pay-btn');
-      const upiID = 'your-upi-id@okhdfcbank'; // <-- Change this!
-      const amount = '500.00';
-      const note = `RemoteScope slot ${slot.time} UTC`;
-      upiLink.href = `upi://pay?pa=${upiID}&pn=RemoteScope&am=${amount}&tn=${encodeURIComponent(note)}&cu=INR`;
-    });
-    slotContainer.appendChild(div);
-  });
-
-  // Booking form submission
-  document.getElementById('booking-details-form').addEventListener('submit', e => {
-    e.preventDefault();
-    if (!selectedSlot) return alert('Please select a slot.');
-    if (!document.getElementById('paid-check').checked) return alert('Confirm payment.');
-    alert('Booking submitted! We will email your session link.');
-    // Reset
-    document.getElementById('payment-form').style.display = 'none';
-    document.querySelectorAll('.slot-item.selected').forEach(el => el.classList.remove('selected'));
-    selectedSlot = null;
-  });
-}
-
-// === 6. Blog posts loader ===
+// =============================================
+// 3. BLOG (dynamic posts)
+// =============================================
 const blogContainer = document.getElementById('blog-container');
 if (blogContainer) {
-  const posts = [
-    { title:'First Light from Our Bortle 1 Observatory', excerpt:'The story of our first successful test image...', image:'https://placehold.co/600x300/0b0f19/6C63FF?text=First+Light', id:'first-light' },
-    { title:'Top 5 Beginner DSO Targets', excerpt:'Where to point the telescope for stunning results.', image:'https://placehold.co/600x300/0b0f19/e942f5?text=DSO+Targets', id:'beginner-dso' }
-  ];
-  blogContainer.innerHTML = posts.map(post => `
-    <article class="blog-card reveal">
-      <img src="${post.image}" alt="${post.title}">
-      <div class="blog-card-content">
-        <h3>${post.title}</h3>
-        <p>${post.excerpt}</p>
-        <a href="posts/${post.id}.html" class="btn-secondary">Read More</a>
-      </div>
-    </article>
-  `).join('');
+    const posts = [
+        { title: 'First Light from Spiti', excerpt: 'Our first test image from the remote observatory...', image: 'https://placehold.co/600x300/0b0f19/6C63FF?text=First+Light' },
+        { title: 'Beginner DSO Targets', excerpt: 'Where to point the telescope for stunning results.', image: 'https://placehold.co/600x300/0b0f19/e942f5?text=DSO+Targets' }
+    ];
+    blogContainer.innerHTML = posts.map(post => `
+        <article class="blog-card">
+            <img src="${post.image}" alt="${post.title}">
+            <div class="blog-card-content">
+                <h3>${post.title}</h3>
+                <p>${post.excerpt}</p>
+            </div>
+        </article>
+    `).join('');
 }
 
-// === 7. Contact form handler (demo) ===
+// =============================================
+// 4. BOOKING ENGINE (dynamic pricing, UPI)
+// =============================================
+function updatePrice() {
+    const equipSelect = document.getElementById('equipment-select');
+    const cameraSelect = document.getElementById('camera-select');
+    const basePrice = parseInt(equipSelect.selectedOptions[0].dataset.price);
+    const cameraExtra = parseInt(cameraSelect.selectedOptions[0].dataset.price);
+    const filters = Array.from(document.querySelectorAll('.filter-checkboxes input:checked'));
+    const filterCost = filters.length * 100;
+    const ditherCheck = document.getElementById('dither');
+    const ditherCost = ditherCheck?.checked ? 50 : 0;
+    
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+    let hours = 0;
+    if (startTime && endTime) {
+        const start = new Date(`1970-01-01T${startTime}:00`);
+        let end = new Date(`1970-01-01T${endTime}:00`);
+        if (end <= start) {
+            end.setDate(end.getDate() + 1); // overnight
+        }
+        hours = (end - start) / (1000 * 60 * 60);
+    }
+    // ensure minimum 1 hour if times selected
+    if (hours < 1 && (startTime && endTime)) hours = 1;
+    
+    const totalPerHour = basePrice + cameraExtra + filterCost + ditherCost;
+    const total = totalPerHour * hours;
+    document.getElementById('total-price').textContent = total;
+    document.getElementById('session-duration').textContent = `Duration: ${hours} hours`;
+    
+    // Update UPI link
+    const upiID = 'your-upi-id@okhdfcbank'; // <-- CHANGE THIS
+    const note = `RemoteScope Booking - ${hours}hr`;
+    const upiLink = document.getElementById('upi-link');
+    upiLink.href = `upi://pay?pa=${upiID}&pn=RemoteScope&am=${total}.00&tn=${encodeURIComponent(note)}&cu=INR`;
+}
+
+// Set min date to today
+const dateInput = document.getElementById('booking-date');
+if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+    dateInput.value = today;
+}
+
+// Pre-select equipment from URL query
+const urlParams = new URLSearchParams(window.location.search);
+const equipParam = urlParams.get('equip');
+if (equipParam && document.getElementById('equipment-select')) {
+    const select = document.getElementById('equipment-select');
+    for (let option of select.options) {
+        if (option.value === equipParam) {
+            option.selected = true;
+            break;
+        }
+    }
+    updatePrice();
+}
+
+// Submit booking (demo)
+function submitBooking() {
+    const name = document.getElementById('user-name')?.value;
+    const email = document.getElementById('user-email')?.value;
+    if (!name || !email) {
+        alert('Please fill in all details.');
+        return;
+    }
+    alert('Booking submitted! Check your email for access link.');
+    // Reset form (optional)
+}
+
+// =============================================
+// 5. WEATHER PANEL (mock 14-day forecast)
+// =============================================
+const weatherGrid = document.getElementById('weather-grid');
+if (weatherGrid) {
+    const conditions = ['☀️ Clear', '⛅ Partly Cloudy', '☁️ Cloudy', '🌧️ Rain', '❄️ Snow'];
+    const icons = { 'Clear': 'fa-sun', 'Partly Cloudy': 'fa-cloud-sun', 'Cloudy': 'fa-cloud', 'Rain': 'fa-cloud-rain', 'Snow': 'fa-snowflake' };
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const today = new Date();
+    let html = '';
+    for (let i = 0; i < 14; i++) {
+        const date = new Date(today);
+        date.setDate(date.getDate() + i);
+        const dayName = days[date.getDay()];
+        const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        const condition = conditions[Math.floor(Math.random() * conditions.length)];
+        const condName = condition.split(' ')[1] ? condition.split(' ').slice(1).join(' ') : condition;
+        const icon = icons[condName] || 'fa-sun';
+        html += `
+            <div class="weather-card">
+                <i class="fas ${icon}"></i>
+                <div>${dayName} ${dateStr}</div>
+                <div>${Math.floor(Math.random() * 15) + 5}° / ${Math.floor(Math.random() * 10) - 5}°</div>
+                <div style="font-size:0.8rem;">${condition}</div>
+            </div>
+        `;
+    }
+    weatherGrid.innerHTML = html;
+}
+
+// =============================================
+// 6. CONTACT FORM (demo submit)
+// =============================================
 document.getElementById('contact-form')?.addEventListener('submit', e => {
-  e.preventDefault();
-  alert('Message sent! We will get back to you soon.');
+    e.preventDefault();
+    alert('Message sent! We will get back to you soon.');
+    e.target.reset();
 });
