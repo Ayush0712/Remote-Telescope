@@ -1,4 +1,4 @@
-// Dummy slots for next 24 hours (you can dynamically generate)
+// Slots data
 const slots = [
   "2026-05-04 18:00 UTC",
   "2026-05-04 19:00 UTC",
@@ -11,9 +11,8 @@ const slots = [
 const slotList = document.getElementById('slot-list');
 const bookingForm = document.getElementById('booking-form');
 const selectedSlotSpan = document.getElementById('selected-slot');
-let selectedSlot = null;
 
-// Render slots
+// Render Slot Buttons
 slots.forEach(slot => {
   const btn = document.createElement('button');
   btn.className = 'slot-btn';
@@ -23,18 +22,17 @@ slots.forEach(slot => {
 });
 
 function selectSlot(slot, btn) {
-  // deselect all
+  // Update UI for selected state
   document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
-  selectedSlot = slot;
   selectedSlotSpan.textContent = slot;
   bookingForm.style.display = 'block';
-  // Update UPI link with dynamic amount and note (using UPI intent)
-  updateUPILink(slot);
-}
+  
+  // Scroll to form if not visible
+  bookingForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-function updateUPILink(slot) {
-  const upiID = "your-upi-id@okhdfcbank";  // <-- CHANGE THIS
+  // Update UPI payment link
+  const upiID = "your-upi-id@okhdfcbank"; // <--- CHANGE THIS
   const name = "Remote Telescope";
   const amount = "500.00";
   const note = `Telescope slot ${slot}`;
@@ -42,22 +40,21 @@ function updateUPILink(slot) {
   document.getElementById('upi-link').href = upiURL;
 }
 
-// Form submission – for static site, you can just show confirmation or post to a service
+// Form Submission
 document.getElementById('booking-form').addEventListener('submit', function(e) {
   e.preventDefault();
   if (!document.getElementById('paid-confirm').checked) {
-    alert('Please confirm payment.');
+    alert('Please confirm your payment.');
     return;
   }
-  // Here you would normally send data to a backend or a Google Form
-  // For demo, just show confirmation
-  bookingForm.style.display = 'none';
+  // Hide form and slots, show confirmation
   document.getElementById('slots').style.display = 'none';
+  bookingForm.style.display = 'none';
   document.getElementById('confirmation').style.display = 'block';
-  // Optionally send email via formspree or log booking
-  console.log('Booking:', {
+  
+  console.log('New Booking:', {
     name: document.getElementById('name').value,
     email: document.getElementById('email').value,
-    slot: selectedSlot
+    slot: selectedSlotSpan.textContent
   });
 });
