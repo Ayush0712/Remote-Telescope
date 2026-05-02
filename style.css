@@ -16,7 +16,7 @@
 }
 
 body {
-    background: var(--bg-deep);
+    background: transparent;   /* ← was var(--bg-deep), which hid the canvas */
     color: var(--text);
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
