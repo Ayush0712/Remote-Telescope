@@ -94,6 +94,21 @@ document.querySelector('.close-lightbox')?.addEventListener('click', () => {
     document.getElementById('lightbox').classList.remove('active');
 });
 
+// Home page 3×8 grid
+const homeGrid = document.getElementById('home-gallery-grid');
+if (homeGrid) {
+    // Use the galleryImages array (or create a new one with 24 items)
+    const gridImages = [];
+    const sampleImgBase = 'https://placehold.co/400x300/1a1f35/6C63FF?text=';
+    const titles = ['Orion','Andromeda','Pleiades','Rosette','Horsehead','Lagoon','Trifid','Eagle','Omega','Crab','Veil','Ghost','Witch Head','Heart','Soul','California','Bubble','Cocoon','Iris','Elephant Trunk','North America','Running Man','Cone','Christmas Tree'];
+    for (let i=0; i<24; i++) {
+        gridImages.push({
+            src: `${sampleImgBase}${titles[i]}`,
+            title: titles[i] + (i<22 ? ' Nebula' : ' Cluster')
+        });
+    }
+    homeGrid.innerHTML = gridImages.map(img => `<img src="${img.src}" alt="${img.title}" loading="lazy">`).join('');
+}
 // =============================================
 // 3. BLOG (dynamic posts)
 // =============================================
