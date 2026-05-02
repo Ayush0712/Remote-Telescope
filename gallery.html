@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | RemoteScope</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <canvas id="starfield-canvas"></canvas>
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">RemoteScope</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html" class="active">Gallery</a></li>
+                <li><a href="pricing.html">Book a Slot</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-hero">
+        <h1>The Cosmic Gallery</h1>
+        <p>Stunning images captured through our remote telescope system.</p>
+    </header>
+
+    <!-- Masonry Grid for Gallery Cards -->
+    <div id="gallery-container" class="masonry-grid reveal">
+        <!-- Dynamically loaded by JavaScript -->
+    </div>
+
+    <!-- Lightbox Overlay -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+        <span class="close-lightbox" style="position: absolute; top: 30px; right: 50px; font-size: 3rem; color: #fff; cursor: pointer;">&times;</span>
+    </div>
+
+    <footer>... (same as home)</footer>
+    <button id="back-to-top" class="back-to-top">↑</button>
+    <script src="script.js"></script>
+</body>
+</html>
