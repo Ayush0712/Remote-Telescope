@@ -68,49 +68,14 @@ window.addEventListener('resize', () => {
 });
 
 // =============================================
-// 2. GALLERY (load images & lightbox)
-// =============================================
-const galleryContainer = document.getElementById('gallery-container');
-if (galleryContainer) {
-    galleryContainer.innerHTML = galleryImages.map(img => `
-        <div class="gallery-card">
-            <img src="${img.src}" alt="${img.title}" onclick="openLightbox('${img.src}', '${img.title}')">
-        </div>
-    `).join('');
-}
-function openLightbox(src, caption) {
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox-caption').textContent = caption;
-    document.getElementById('lightbox').classList.add('active');
-}
-document.querySelector('.close-lightbox')?.addEventListener('click', () => {
-    document.getElementById('lightbox').classList.remove('active');
-});
-
-// Home page 3×8 grid
-const homeGrid = document.getElementById('home-gallery-grid');
-if (homeGrid) {
-    // Use the galleryImages array (or create a new one with 24 items)
-    const gridImages = [];
-    const sampleImgBase = 'https://placehold.co/400x300/1a1f35/6C63FF?text=';
-    const titles = ['Orion','Andromeda','Pleiades','Rosette','Horsehead','Lagoon','Trifid','Eagle','Omega','Crab','Veil','Ghost','Witch Head','Heart','Soul','California','Bubble','Cocoon','Iris','Elephant Trunk','North America','Running Man','Cone','Christmas Tree'];
-    for (let i=0; i<24; i++) {
-        gridImages.push({
-            src: `${sampleImgBase}${titles[i]}`,
-            title: titles[i] + (i<22 ? ' Nebula' : ' Cluster')
-        });
-    }
-    homeGrid.innerHTML = gridImages.map(img => `<img src="${img.src}" alt="${img.title}" loading="lazy">`).join('');
-}
-
-// =============================================
-// DYNAMIC GALLERY LOADER (from gallery-data.json)
+// 2. DYNAMIC GALLERY LOADER (from gallery-data.json)
 // =============================================
 async function loadGalleryData() {
     try {
         const response = await fetch('gallery-data.json');
         if (!response.ok) throw new Error('Failed to load gallery data');
         const images = await response.json();
+
         // Populate gallery page (all images)
         const galleryContainer = document.getElementById('gallery-container');
         if (galleryContainer) {
@@ -122,16 +87,16 @@ async function loadGalleryData() {
             `).join('');
         }
 
-        // Populate home page grid: 3 columns × 8 rows = 24 images
+        // Populate home page 3×8 grid
         const homeGrid = document.getElementById('home-gallery-grid');
         if (homeGrid) {
-            const gridImages = images.slice(0, 24); // take first 24 (or all if less)
+            const gridImages = images.slice(0, 24); // first 24 images
             homeGrid.innerHTML = gridImages.map(img => `
                 <img src="${img.src}" alt="${img.title}" loading="lazy">
             `).join('');
         }
 
-        // Optional: also fill the old "Recent Captures" feed if still present
+        // Optional: old "Recent Captures" feed (if still present)
         const homeFeed = document.getElementById('home-feed');
         if (homeFeed) {
             const feedImages = images.slice(0, 4);
@@ -143,14 +108,26 @@ async function loadGalleryData() {
         }
     } catch (error) {
         console.error('Could not load gallery data:', error);
-        // Optional fallback: display placeholder error
         const containers = document.querySelectorAll('#gallery-container, #home-gallery-grid');
         containers.forEach(c => c.innerHTML = '<p>Gallery images could not be loaded.</p>');
     }
 }
 
-// Call it immediately after DOM is ready
+// Lightbox functions
+function openLightbox(src, caption) {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox-caption').textContent = caption;
+    lb.classList.add('active');
+}
+document.querySelector('.close-lightbox')?.addEventListener('click', () => {
+    document.getElementById('lightbox')?.classList.remove('active');
+});
+
+// Call loader when page is ready
 document.addEventListener('DOMContentLoaded', loadGalleryData);
+
 // =============================================
 // 3. BLOG (dynamic posts)
 // =============================================
@@ -191,23 +168,23 @@ function updatePrice() {
         const start = new Date(`1970-01-01T${startTime}:00`);
         let end = new Date(`1970-01-01T${endTime}:00`);
         if (end <= start) {
-            end.setDate(end.getDate() + 1); // overnight
+            end.setDate(end.getDate() + 1);
         }
         hours = (end - start) / (1000 * 60 * 60);
     }
-    // ensure minimum 1 hour if times selected
     if (hours < 1 && (startTime && endTime)) hours = 1;
     
     const totalPerHour = basePrice + cameraExtra + filterCost + ditherCost;
     const total = totalPerHour * hours;
-    document.getElementById('total-price').textContent = total;
-    document.getElementById('session-duration').textContent = `Duration: ${hours} hours`;
+    const totalPriceSpan = document.getElementById('total-price');
+    const sessionDuration = document.getElementById('session-duration');
+    if (totalPriceSpan) totalPriceSpan.textContent = total;
+    if (sessionDuration) sessionDuration.textContent = `Duration: ${hours} hours`;
     
-    // Update UPI link
     const upiID = 'your-upi-id@okhdfcbank'; // <-- CHANGE THIS
     const note = `RemoteScope Booking - ${hours}hr`;
     const upiLink = document.getElementById('upi-link');
-    upiLink.href = `upi://pay?pa=${upiID}&pn=RemoteScope&am=${total}.00&tn=${encodeURIComponent(note)}&cu=INR`;
+    if (upiLink) upiLink.href = `upi://pay?pa=${upiID}&pn=RemoteScope&am=${total}.00&tn=${encodeURIComponent(note)}&cu=INR`;
 }
 
 // Set min date to today
@@ -232,7 +209,6 @@ if (equipParam && document.getElementById('equipment-select')) {
     updatePrice();
 }
 
-// Submit booking (demo)
 function submitBooking() {
     const name = document.getElementById('user-name')?.value;
     const email = document.getElementById('user-email')?.value;
@@ -241,7 +217,6 @@ function submitBooking() {
         return;
     }
     alert('Booking submitted! Check your email for access link.');
-    // Reset form (optional)
 }
 
 // =============================================
