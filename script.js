@@ -14,15 +14,12 @@ for (let i = 0; i < 200; i++) {
         radius: Math.random() * 1.5 + 0.5,
         speed: Math.random() * 0.8 + 0.2,
         opacity: Math.random(),
-        blink: Math.random() * 0.02
     });
 }
-// Shooting stars
 let shootingStars = [];
 
 function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Static stars
     stars.forEach(s => {
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
@@ -34,7 +31,6 @@ function drawStars() {
             s.x = Math.random() * canvas.width;
         }
     });
-    // Shooting stars
     if (Math.random() < 0.02) {
         shootingStars.push({
             x: Math.random() * canvas.width,
@@ -47,12 +43,12 @@ function drawStars() {
     shootingStars.forEach((ss, index) => {
         ctx.beginPath();
         ctx.moveTo(ss.x, ss.y);
-        ctx.lineTo(ss.x - ss.len, ss.y + ss.len/2);
+        ctx.lineTo(ss.x - ss.len, ss.y + ss.len / 2);
         ctx.strokeStyle = `rgba(255,255,255,${ss.opacity})`;
         ctx.lineWidth = 1.5;
         ctx.stroke();
         ss.x -= ss.speed;
-        ss.y += ss.speed/2;
+        ss.y += ss.speed / 2;
         ss.opacity -= 0.02;
         if (ss.opacity <= 0 || ss.x < 0 || ss.y > canvas.height) {
             shootingStars.splice(index, 1);
@@ -64,7 +60,7 @@ drawStars();
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    stars = stars.map(s => ({...s, x: Math.random()*canvas.width, y: Math.random()*canvas.height }));
+    stars = stars.map(s => ({ ...s, x: Math.random() * canvas.width, y: Math.random() * canvas.height }));
 });
 
 // =============================================
@@ -76,7 +72,6 @@ async function loadGalleryData() {
         if (!response.ok) throw new Error('Failed to load gallery data');
         const images = await response.json();
 
-        // Populate gallery page (all images)
         const galleryContainer = document.getElementById('gallery-container');
         if (galleryContainer) {
             galleryContainer.innerHTML = images.map(img => `
@@ -87,16 +82,14 @@ async function loadGalleryData() {
             `).join('');
         }
 
-        // Populate home page 3×8 grid
         const homeGrid = document.getElementById('home-gallery-grid');
         if (homeGrid) {
-            const gridImages = images.slice(0, 24); // first 24 images
+            const gridImages = images.slice(0, 24);
             homeGrid.innerHTML = gridImages.map(img => `
                 <img src="${img.src}" alt="${img.title}" loading="lazy">
             `).join('');
         }
 
-        // Optional: old "Recent Captures" feed (if still present)
         const homeFeed = document.getElementById('home-feed');
         if (homeFeed) {
             const feedImages = images.slice(0, 4);
@@ -113,7 +106,6 @@ async function loadGalleryData() {
     }
 }
 
-// Lightbox functions
 function openLightbox(src, caption) {
     const lb = document.getElementById('lightbox');
     if (!lb) return;
@@ -125,7 +117,6 @@ document.querySelector('.close-lightbox')?.addEventListener('click', () => {
     document.getElementById('lightbox')?.classList.remove('active');
 });
 
-// Call loader when page is ready
 document.addEventListener('DOMContentLoaded', loadGalleryData);
 
 // =============================================
@@ -160,34 +151,31 @@ function updatePrice() {
     const filterCost = filters.length * 100;
     const ditherCheck = document.getElementById('dither');
     const ditherCost = ditherCheck?.checked ? 50 : 0;
-    
+
     const startTime = document.getElementById('start-time').value;
     const endTime = document.getElementById('end-time').value;
     let hours = 0;
     if (startTime && endTime) {
         const start = new Date(`1970-01-01T${startTime}:00`);
         let end = new Date(`1970-01-01T${endTime}:00`);
-        if (end <= start) {
-            end.setDate(end.getDate() + 1);
-        }
+        if (end <= start) end.setDate(end.getDate() + 1);
         hours = (end - start) / (1000 * 60 * 60);
     }
     if (hours < 1 && (startTime && endTime)) hours = 1;
-    
+
     const totalPerHour = basePrice + cameraExtra + filterCost + ditherCost;
     const total = totalPerHour * hours;
-    const totalPriceSpan = document.getElementById('total-price');
-    const sessionDuration = document.getElementById('session-duration');
-    if (totalPriceSpan) totalPriceSpan.textContent = total;
-    if (sessionDuration) sessionDuration.textContent = `Duration: ${hours} hours`;
-    
-    const upiID = 'your-upi-id@okhdfcbank'; // <-- CHANGE THIS
+    const totalSpan = document.getElementById('total-price');
+    const durationSpan = document.getElementById('session-duration');
+    if (totalSpan) totalSpan.textContent = total;
+    if (durationSpan) durationSpan.textContent = `Duration: ${hours} hours`;
+
+    const upiID = 'your-upi-id@okhdfcbank'; // ← change this
     const note = `RemoteScope Booking - ${hours}hr`;
     const upiLink = document.getElementById('upi-link');
     if (upiLink) upiLink.href = `upi://pay?pa=${upiID}&pn=RemoteScope&am=${total}.00&tn=${encodeURIComponent(note)}&cu=INR`;
 }
 
-// Set min date to today
 const dateInput = document.getElementById('booking-date');
 if (dateInput) {
     const today = new Date().toISOString().split('T')[0];
@@ -195,7 +183,6 @@ if (dateInput) {
     dateInput.value = today;
 }
 
-// Pre-select equipment from URL query
 const urlParams = new URLSearchParams(window.location.search);
 const equipParam = urlParams.get('equip');
 if (equipParam && document.getElementById('equipment-select')) {
@@ -226,7 +213,7 @@ const weatherGrid = document.getElementById('weather-grid');
 if (weatherGrid) {
     const conditions = ['☀️ Clear', '⛅ Partly Cloudy', '☁️ Cloudy', '🌧️ Rain', '❄️ Snow'];
     const icons = { 'Clear': 'fa-sun', 'Partly Cloudy': 'fa-cloud-sun', 'Cloudy': 'fa-cloud', 'Rain': 'fa-cloud-rain', 'Snow': 'fa-snowflake' };
-    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const today = new Date();
     let html = '';
     for (let i = 0; i < 14; i++) {
@@ -248,8 +235,18 @@ if (weatherGrid) {
     }
     weatherGrid.innerHTML = html;
 }
+
 // =============================================
-// 6. MOBILE MENU TOGGLE
+// 6. CONTACT FORM (demo submit)
+// =============================================
+document.getElementById('contact-form')?.addEventListener('submit', e => {
+    e.preventDefault();
+    alert('Message sent! We will get back to you soon.');
+    e.target.reset();
+});
+
+// =============================================
+// 7. MOBILE MENU TOGGLE
 // =============================================
 const menuToggle = document.getElementById('menu-toggle');
 const menuOverlay = document.getElementById('menu-overlay');
@@ -260,7 +257,6 @@ if (menuToggle && menuOverlay) {
         menuOverlay.classList.toggle('active');
     });
 
-    // Close menu when an overlay link is clicked
     const overlayLinks = document.querySelectorAll('.overlay-link');
     overlayLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -269,12 +265,3 @@ if (menuToggle && menuOverlay) {
         });
     });
 }
-
-// =============================================
-// 7. CONTACT FORM (demo submit)
-// =============================================
-document.getElementById('contact-form')?.addEventListener('submit', e => {
-    e.preventDefault();
-    alert('Message sent! We will get back to you soon.');
-    e.target.reset();
-});
