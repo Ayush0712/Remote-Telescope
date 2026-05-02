@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact | RemoteScope</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | RemoteScope</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <canvas id="starfield-canvas"></canvas>
-  <nav id="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="logo">🌌 RemoteScope</a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="pricing.html">Book a Slot</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="contact.html" class="active">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
+    <canvas id="stars-canvas"></canvas>
 
-  <section class="page-hero">
-    <h1>Get in Touch</h1>
-    <p>Have a question? Want a custom booking? Just say hello.</p>
-  </section>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="booking.html">Book Now</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
-  <form class="contact-form reveal" id="contact-form">
-    <input type="text" placeholder="Your Name" required>
-    <input type="email" placeholder="Email" required>
-    <input type="text" placeholder="Subject">
-    <textarea placeholder="Your Message" rows="6" required></textarea>
-    <button type="submit" class="btn-primary">Send Message</button>
-  </form>
+    <section class="page-hero">
+        <h1>Get in Touch</h1>
+        <p>Questions? Custom requests? Just say hello.</p>
+    </section>
 
-  <footer>
-    <p>© 2026 RemoteScope</p>
-  </footer>
-  <button id="back-to-top" class="back-to-top">↑</button>
-  <script src="script.js"></script>
+    <form class="contact-form" id="contact-form">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Email" required>
+        <input type="text" placeholder="Subject">
+        <textarea placeholder="Your Message" rows="6" required></textarea>
+        <button type="submit" class="btn-primary">Send Message</button>
+    </form>
+
+    <footer>
+        <p>© 2026 RemoteScope. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
