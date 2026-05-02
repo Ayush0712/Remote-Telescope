@@ -814,14 +814,19 @@ img, video, canvas {
 }
 
 /* Animate hamburger to cross when overlay is open (optional) */
+.menu-toggle.active .bar {
+    /* Reset the original margins so the bars collapse into a single line */
+    margin: 0;
+}
 .menu-toggle.active .bar:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: translateY(10px) rotate(45deg);
 }
 .menu-toggle.active .bar:nth-child(2) {
     opacity: 0;
+    transform: scaleX(0);
 }
 .menu-toggle.active .bar:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
+    transform: translateY(-10px) rotate(-45deg);
 }
 
 /* Show hamburger only on tablets/phones */
