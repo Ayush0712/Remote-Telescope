@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Slot | RemoteScope</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <canvas id="stars-canvas"></canvas>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="booking.html" class="active">Book Now</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="booking-container">
+        <!-- Left Column: Booking Form -->
+        <div class="booking-form-panel">
+            <h1>Configure Your Session</h1>
+            
+            <div class="form-group">
+                <label><i class="fas fa-telescope"></i> Telescope Package</label>
+                <select id="equipment-select" onchange="updatePrice()">
+                    <option value="redcat51" data-price="500">RedCat 51 – ₹500/hr</option>
+                    <option value="esprit120" data-price="600">Esprit 120 – ₹600/hr</option>
+                    <option value="rasa8" data-price="800">RASA 8 – ₹800/hr</option>
+                    <option value="tak-fsq106" data-price="1000">Takahashi FSQ-106 – ₹1000/hr</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-camera"></i> Camera</label>
+                <select id="camera-select" onchange="updatePrice()">
+                    <option value="asi290mc" data-price="0">ASI290MC (included)</option>
+                    <option value="asi2600mc" data-price="200">ASI2600MC Pro (+₹200/hr)</option>
+                    <option value="asi6200mm" data-price="400">ASI6200MM Pro (+₹400/hr)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-filter"></i> Filters (₹100/hr each)</label>
+                <div class="filter-checkboxes">
+                    <label><input type="checkbox" value="lrgb" onchange="updatePrice()"> LRGB</label>
+                    <label><input type="checkbox" value="ha" onchange="updatePrice()"> H‑α</label>
+                    <label><input type="checkbox" value="oiii" onchange="updatePrice()"> OIII</label>
+                    <label><input type="checkbox" value="sii" onchange="updatePrice()"> SII</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-calendar-alt"></i> Date</label>
+                <input type="date" id="booking-date" min="" onchange="updatePrice()">
+            </div>
+            <div class="time-range">
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Start Time (IST, after 6 PM)</label>
+                    <input type="time" id="start-time" min="18:00" max="23:59" step="3600" onchange="updatePrice()">
+                </div>
+                <div class="form-group">
+                    <label>End Time (before 6 AM next day)</label>
+                    <input type="time" id="end-time" min="00:00" max="06:00" step="3600" onchange="updatePrice()">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-cog"></i> Advanced</label>
+                <label class="checkbox-option"><input type="checkbox" id="dither" onchange="updatePrice()"> Dithering (+₹50/hr)</label>
+            </div>
+
+            <div class="price-display" id="price-box">
+                <h2>Total: ₹<span id="total-price">0</span></h2>
+                <p id="session-duration">Duration: 0 hours</p>
+            </div>
+
+            <div class="payment-section">
+                <img src="upi-qr.png" alt="UPI QR" class="qr-code">
+                <a href="#" id="upi-link" class="btn-primary">Pay via UPI</a>
+            </div>
+
+            <button class="btn-primary full-width" onclick="submitBooking()">Confirm Booking</button>
+        </div>
+
+        <!-- Right Column: Weather Panel -->
+        <div class="weather-panel" id="weather-panel">
+            <h2><i class="fas fa-cloud-sun"></i> Spiti Weather</h2>
+            <div class="weather-grid" id="weather-grid"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 RemoteScope. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
