@@ -4,21 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RemoteScope | Your Window to the Universe</title>
-  <!-- Correct CSS link (style.css, not styles.css) -->
-  <link rel="stylesheet" href="style.css">
-  <!-- Font Awesome 6 for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts -->
+  <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Moving starfield canvas -->
   <canvas id="starfield-canvas"></canvas>
   
-  <!-- Navigation -->
   <nav id="navbar">
     <div class="nav-container">
-      <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
+      <a href="index.html" class="logo">🌌 RemoteScope</a>
       <ul class="nav-links">
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="gallery.html">Gallery</a></li>
@@ -31,145 +25,54 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <header class="hero-video">
+  <header class="hero-video" style="background: linear-gradient(180deg, rgba(10,13,20,0) 0%, #0a0d14 100%);">
     <div class="hero-content reveal">
-      <h1>Your Window to the <span style="color:var(--accent)">Universe</span></h1>
-      <p>Control a professional-grade telescope from anywhere in the world. Capture stunning nebulae, galaxies, and planets with our fully remote ASIAIR-powered observatory.</p>
-      <a href="pricing.html" class="btn-primary">Book Your Session</a>
-      <a href="#how-it-works" class="btn-secondary">How It Works</a>
+      <h1>Explore the Cosmos from <span style="color:#6C63FF">Anywhere</span></h1>
+      <p>Control a professional-grade telescope in a Bortle 1 zone. No equipment needed – just your passion.</p>
+      <a href="pricing.html" class="btn-primary">View Plans & Book</a>
     </div>
   </header>
 
-  <!-- Stats Bar -->
   <section class="stats-bar reveal">
     <div class="stat-grid">
-      <div class="stat-item">
-        <i class="fas fa-map-marker-alt"></i>
-        <h3>Bortle 1</h3>
-        <p>Sky Quality</p>
-      </div>
-      <div class="stat-item">
-        <i class="fas fa-star"></i>
-        <h3>Takahashi FSQ-106</h3>
-        <p>Primary Scope</p>
-      </div>
-      <div class="stat-item">
-        <i class="fas fa-camera"></i>
-        <h3>5+ hrs</h3>
-        <p>Avg. Integration</p>
-      </div>
-      <div class="stat-item">
-        <i class="fas fa-users"></i>
-        <h3>150+</h3>
-        <p>Happy Astronomers</p>
-      </div>
+      <div class="stat-item"><i class="fas fa-moon"></i><h3>Bortle 1</h3><p>Sky Quality</p></div>
+      <div class="stat-item"><i class="fas fa-star"></i><h3>Takahashi FSQ-106</h3><p>Primary Scope</p></div>
+      <div class="stat-item"><i class="fas fa-camera"></i><h3>5+ hrs</h3><p>Avg. Integration</p></div>
+      <div class="stat-item"><i class="fas fa-users"></i><h3>150+</h3><p>Happy Astronomers</p></div>
     </div>
   </section>
 
-  <!-- How It Works -->
-  <section id="how-it-works" class="how-it-works reveal">
+  <section class="how-it-works reveal">
     <h2 class="section-title">How It Works</h2>
-    <p class="section-subtitle">Three simple steps to capture the cosmos.</p>
     <div class="steps-grid">
       <div class="step">
         <div class="step-icon">1</div>
         <h3>Book a Slot</h3>
-        <p>Choose an available 1-hour window from our calendar and pay securely via UPI.</p>
+        <p>Reserve your 1‑hour window and pay securely via UPI.</p>
       </div>
       <div class="step">
         <div class="step-icon">2</div>
         <h3>Connect Remotely</h3>
-        <p>Receive your unique session link. Control the telescope from your browser—no software needed.</p>
+        <p>Get a private link to control the telescope through your browser.</p>
       </div>
       <div class="step">
         <div class="step-icon">3</div>
         <h3>Capture & Download</h3>
-        <p>Point, shoot, and download your high-resolution astrophotos immediately after your session.</p>
+        <p>Shoot deep-sky objects and download your data immediately.</p>
       </div>
     </div>
   </section>
 
-  <!-- Recent Captures -->
   <section class="community-feed reveal">
-    <h2 class="section-title">Recent Captures</h2>
-    <p class="section-subtitle">Images taken by our community using RemoteScope.</p>
+    <h2 class="section-title">Recent Masterpieces</h2>
     <div class="feed-grid" id="home-feed">
-      <!-- Dynamically loaded by script.js (first 4 images from gallery) -->
+      <!-- Filled by JS -->
     </div>
     <a href="gallery.html" class="btn-secondary">View Full Gallery →</a>
   </section>
 
-  <!-- Booking Section -->
-  <section id="book" class="booking reveal">
-    <h2 class="section-title">Book Your Telescope Time</h2>
-    <p class="section-subtitle">1-hour session · ₹500 only · Limited slots available</p>
-    <div class="booking-card">
-      <div id="slots">
-        <h3>Select a Time Slot (UTC)</h3>
-        <div id="slot-list"></div>
-      </div>
-
-      <form id="booking-form" style="display:none;">
-        <h3>Your Details</h3>
-        <div class="form-group">
-          <input type="text" id="name" placeholder="Your Name" required>
-        </div>
-        <div class="form-group">
-          <input type="email" id="email" placeholder="Email Address" required>
-        </div>
-        <div class="selected-slot-info">
-          <i class="far fa-clock"></i> <span id="selected-slot"></span>
-          <strong>₹500</strong>
-        </div>
-
-        <div id="payment-section">
-          <p>Complete your payment via UPI</p>
-          <div class="payment-qr">
-            <img id="qr-code" src="upi-qr.png" alt="UPI QR Code">
-          </div>
-          <p>or click to pay instantly:</p>
-          <a id="upi-link" href="#" class="upi-btn"><i class="fas fa-mobile-alt"></i> Pay ₹500 via UPI</a>
-        </div>
-
-        <label class="checkbox-container">
-          <input type="checkbox" id="paid-confirm" required>
-          <span class="checkmark"></span> I have completed the payment
-        </label>
-        <button type="submit" class="btn-primary full-width">Confirm My Booking</button>
-      </form>
-
-      <div id="confirmation" class="confirmation-message" style="display:none;">
-        <i class="fas fa-check-circle"></i>
-        <h2>Booking Confirmed!</h2>
-        <p>We'll verify your payment and email your telescope access link shortly.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials -->
-  <section class="testimonials reveal">
-    <h2 class="section-title">What Astronomers Say</h2>
-    <div class="testimonial-grid">
-      <div class="testimonial-card">
-        <p>"The Bortle 1 skies are incredible! I captured the Horsehead Nebula in 20 minutes—impossible from my backyard. The remote control is seamless."</p>
-        <div class="user">
-          <i class="fas fa-user-circle"></i>
-          <div><strong>Arjun M.</strong><span>Astrophotographer, Mumbai</span></div>
-        </div>
-      </div>
-      <div class="testimonial-card">
-        <p>"Booking was super easy. I paid via Google Pay and within minutes I was connected to the telescope. The UPI integration is brilliant."</p>
-        <div class="user">
-          <i class="fas fa-user-circle"></i>
-          <div><strong>Priya S.</strong><span>Student & Astronomy Enthusiast, Delhi</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <footer>
-    <p>© 2026 RemoteScope. Powered by passion for the cosmos.</p>
+    <p>© 2026 RemoteScope. Proudly exploring the universe together.</p>
     <div class="social-links">
       <a href="#"><i class="fab fa-instagram"></i></a>
       <a href="#"><i class="fab fa-youtube"></i></a>
