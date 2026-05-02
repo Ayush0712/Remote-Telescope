@@ -1,0 +1,8 @@
+body { font-family: Arial, sans-serif; background: #0b0f19; color: #e0e0e0; text-align: center; }
+.container { max-width: 600px; margin: 50px auto; background: #141a29; padding: 30px; border-radius: 12px; }
+input, button { padding: 10px; margin: 10px 0; width: 100%; box-sizing: border-box; border-radius: 6px; border: none; }
+button { background: #1e90ff; color: white; font-weight: bold; cursor: pointer; }
+button:hover { background: #0f6ab4; }
+.slot-btn { background: #2c3e50; color: white; margin: 5px; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+.slot-btn.selected { background: #27ae60; }
+.pay-btn { display: inline-block; background: #5e2d91; color: white; padding: 12px 25px; border-radius: 6px; text-decoration: none; margin: 15px 0; }
