@@ -750,21 +750,26 @@ img, video, canvas {
 .menu-toggle {
     display: none;
     flex-direction: column;
-    justify-content: space-between;
-    width: 32px;
-    height: 24px;
+    justify-content: center;
+    align-items: center;
+    width: 44px;             /* minimum iOS tap target */
+    height: 44px;
     background: transparent;
     border: none;
     cursor: pointer;
-    z-index: 1001;           /* above the overlay */
-    padding: 0;
+    z-index: 1002;           /* stay above the overlay */
+    padding: 6px;           /* keeps the bars centered */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    outline: none;
 }
 .menu-toggle .bar {
-    width: 100%;
+    width: 28px;             /* slightly thicker bars */
     height: 3px;
     background-color: var(--text);
     border-radius: 3px;
     transition: 0.3s ease;
+    margin: 3px 0;          /* equal spacing for 3 bars */
 }
 
 /* Overlay (curtain) – hidden by default */
@@ -775,7 +780,7 @@ img, video, canvas {
     height: 100%;
     background: rgba(6, 11, 20, 0.95);   /* deep space background, almost opaque */
     backdrop-filter: blur(12px);
-    z-index: 999;
+    z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
