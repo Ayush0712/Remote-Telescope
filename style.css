@@ -198,9 +198,9 @@ body::after {
 }
 .hero-content h1 {
     font-size: 3.2rem;
+    color: #ffffff;          /* was var(--text-secondary) – now pure white */
     margin-bottom: 1rem;
-    color: #ffffff;              /* pure white – stands out against the dark overlay */
-    text-shadow: 0 0 30px rgba(0, 0, 0, 0.7);   /* soft glow for legibility */
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     line-height: 1.2;
 }
 .hero-background {
@@ -217,8 +217,9 @@ body::after {
     pointer-events: none;        /* so clicks pass through to the button */
 }
 .price-highlight {
-    color: var(--accent);
+    color: #b388ff;
     font-weight: 800;
+    text-shadow: 0 0 12px rgba(179, 136, 255, 0.6); 
 }
 .hero-content p {
     font-size: 1.2rem;
