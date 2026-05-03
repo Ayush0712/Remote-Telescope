@@ -181,6 +181,7 @@ document.addEventListener('DOMContentLoaded', loadGalleryData);document.addEvent
     loadGalleryData();
     loadHeroImages();      // already present from previous step
     loadEquipmentCards();  // new
+    loadHeroBackground(); 
 });
 // =============================================
 // 3. BLOG (dynamic posts)
@@ -411,6 +412,33 @@ async function loadEquipmentCards() {
     } catch (error) {
         console.error('Equipment cards failed:', error);
         container.innerHTML = '<p>Equipment data could not be loaded.</p>';
+    }
+}
+// =============================================
+// 9. HERO BACKGROUND LOADER (Andromeda image)
+// =============================================
+async function loadHeroBackground() {
+    const bgDiv = document.getElementById('hero-background');
+    if (!bgDiv) return;
+
+    try {
+        const response = await fetch(`hero-background.json?v=${Date.now()}`);
+        if (!response.ok) throw new Error('Could not load hero background config');
+        const data = await response.json();
+        const basePath = `images/${data.imageBase}`;
+
+        // Temporary <img> to find the correct file extension using applyImageFallback
+        const testImg = new Image();
+        testImg.onload = () => {
+            bgDiv.style.backgroundImage = `url('${testImg.src}')`;
+        };
+        testImg.onerror = () => {
+            // Fallback to a placeholder if all extensions fail
+            bgDiv.style.backgroundImage = `url('https://placehold.co/1600x900/0b0f19/6C63FF?text=Andromeda')`;
+        };
+        applyImageFallback(testImg, basePath);
+    } catch (error) {
+        console.warn('Hero background could not be loaded:', error);
     }
 }
 // =============================================
