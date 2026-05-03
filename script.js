@@ -207,34 +207,81 @@ function submitBooking() {
 }
 
 // =============================================
-// 5. WEATHER PANEL (mock 14-day forecast)
+// 5. WEATHER PANEL (Live 14-day forecast from Open-Meteo)
 // =============================================
 const weatherGrid = document.getElementById('weather-grid');
-if (weatherGrid) {
-    const conditions = ['☀️ Clear', '⛅ Partly Cloudy', '☁️ Cloudy', '🌧️ Rain', '❄️ Snow'];
-    const icons = { 'Clear': 'fa-sun', 'Partly Cloudy': 'fa-cloud-sun', 'Cloudy': 'fa-cloud', 'Rain': 'fa-cloud-rain', 'Snow': 'fa-snowflake' };
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const today = new Date();
+
+async function loadWeatherData() {
+    if (!weatherGrid) return;
+
+    // Coordinates for Kaza, Spiti Valley
+    const latitude = 32.2269;
+    const longitude = 78.0726;
+
+    // Construct the API URL for a 14-day forecast with daily parameters
+    const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=14`;
+
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Weather data fetch failed');
+        const data = await response.json();
+        displayWeather(data.daily);
+    } catch (error) {
+        console.error('Could not load weather data:', error);
+        weatherGrid.innerHTML = '<p>Weather data temporarily unavailable.</p>';
+    }
+}
+
+function displayWeather(daily) {
+    // Map WMO weather codes to your preferred descriptive icons and condition names
+    const weatherIcons = {
+        0: { icon: 'fa-sun', condition: 'Clear Sky' },
+        1: { icon: 'fa-sun', condition: 'Mainly Clear' },
+        2: { icon: 'fa-cloud-sun', condition: 'Partly Cloudy' },
+        3: { icon: 'fa-cloud', condition: 'Overcast' },
+        // ... (add more codes for rain, snow, etc. as needed)
+        45: { icon: 'fa-smog', condition: 'Fog' },
+        48: { icon: 'fa-smog', condition: 'Depositing Rime Fog' },
+        51: { icon: 'fa-cloud-rain', condition: 'Light Drizzle' },
+        53: { icon: 'fa-cloud-rain', condition: 'Moderate Drizzle' },
+        55: { icon: 'fa-cloud-rain', condition: 'Dense Drizzle' },
+        61: { icon: 'fa-cloud-rain', condition: 'Slight Rain' },
+        63: { icon: 'fa-cloud-rain', condition: 'Moderate Rain' },
+        65: { icon: 'fa-cloud-rain', condition: 'Heavy Rain' },
+        71: { icon: 'fa-snowflake', condition: 'Slight Snowfall' },
+        73: { icon: 'fa-snowflake', condition: 'Moderate Snowfall' },
+        75: { icon: 'fa-snowflake', condition: 'Heavy Snowfall' },
+        95: { icon: 'fa-bolt', condition: 'Thunderstorm' },
+    };
+    const fallbackWeather = { icon: 'fa-cloud-sun', condition: 'Variable' };
+
     let html = '';
-    for (let i = 0; i < 14; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() + i);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    for (let i = 0; i < daily.time.length; i++) {
+        const date = new Date(daily.time[i] + 'T00:00:00'); // Ensure correct date parsing
         const dayName = days[date.getDay()];
         const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-        const condition = conditions[Math.floor(Math.random() * conditions.length)];
-        const condName = condition.split(' ')[1] ? condition.split(' ').slice(1).join(' ') : condition;
-        const icon = icons[condName] || 'fa-sun';
+
+        const weatherCode = daily.weather_code[i];
+        const weatherInfo = weatherIcons[weatherCode] || fallbackWeather;
+        const tempMax = Math.round(daily.temperature_2m_max[i]);
+        const tempMin = Math.round(daily.temperature_2m_min[i]);
+
         html += `
             <div class="weather-card">
-                <i class="fas ${icon}"></i>
+                <i class="fas ${weatherInfo.icon}"></i>
                 <div>${dayName} ${dateStr}</div>
-                <div>${Math.floor(Math.random() * 15) + 5}° / ${Math.floor(Math.random() * 10) - 5}°</div>
-                <div style="font-size:0.8rem;">${condition}</div>
+                <div>${tempMax}° / ${tempMin}°</div>
+                <div style="font-size:0.8rem;">${weatherInfo.condition}</div>
             </div>
         `;
     }
     weatherGrid.innerHTML = html;
 }
+
+// Call the function to load weather data when the page is ready
+document.addEventListener('DOMContentLoaded', loadWeatherData);
 
 // =============================================
 // 6. CONTACT FORM (demo submit)
