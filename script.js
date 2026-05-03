@@ -215,8 +215,8 @@ async function loadWeatherData() {
     if (!weatherGrid) return;
 
     // Coordinates for Kaza, Spiti Valley
-    const latitude = 32.2269;
-    const longitude = 78.0726;
+    const latitude = 32.2461;
+    const longitude = 78.0349;
 
     // Construct the API URL for a 14-day forecast with daily parameters
     const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=14`;
