@@ -64,6 +64,60 @@ window.addEventListener('resize', () => {
 });
 
 // =============================================
+// IMAGE FALLBACK – tries multiple extensions
+// =============================================
+function applyImageFallback(imgElement, basePath) {
+    // basePath example: "images/orion.jpg" or "images/tak-fsq106" (no ext)
+    // If there's an extension, try other extensions; otherwise try all known
+    const extensions = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
+    let base, currentExt;
+
+    // Check if basePath already includes an extension
+    const lastDot = basePath.lastIndexOf('.');
+    if (lastDot > -1) {
+        base = basePath.substring(0, lastDot);
+        currentExt = basePath.substring(lastDot + 1);
+    } else {
+        base = basePath;
+        currentExt = ''; // no extension given, try all
+    }
+
+    const fallback = 'https://placehold.co/300x200/0b0f19/6C63FF?text=No+Image';
+    imgElement._extIndex = 0;
+    imgElement._extList = extensions;
+    imgElement._base = base;
+
+    function tryNext() {
+        const idx = imgElement._extIndex;
+        if (idx >= imgElement._extList.length) {
+            // All exhausted – use placeholder
+            imgElement.src = fallback;
+            return;
+        }
+        const ext = imgElement._extList[idx];
+        const url = `${base}.${ext}`;
+        const testImg = new Image();
+        testImg.onload = () => {
+            imgElement.src = url;
+        };
+        testImg.onerror = () => {
+            imgElement._extIndex++;
+            tryNext();
+        };
+        testImg.src = url;
+    }
+
+    // If a concrete extension was provided, start from that one, then try others
+    if (currentExt && extensions.includes(currentExt)) {
+        // Start with the given extension, then continue through the list
+        imgElement._extList = extensions.filter(e => e !== currentExt);
+        imgElement._extList.unshift(currentExt); // put the original first
+    }
+    tryNext();
+}
+
+
+// =============================================
 // 2. DYNAMIC GALLERY LOADER (from gallery-data.json)
 // =============================================
 async function loadGalleryData() {
@@ -72,32 +126,50 @@ async function loadGalleryData() {
         if (!response.ok) throw new Error('Failed to load gallery data');
         const images = await response.json();
 
+        // Gallery page
         const galleryContainer = document.getElementById('gallery-container');
         if (galleryContainer) {
             galleryContainer.innerHTML = images.map(img => `
                 <div class="gallery-card">
-                    <img src="${img.src}" alt="${img.title}" onclick="openLightbox('${img.src}', '${img.title} (${img.photographer || ''})')">
+                    <img class="gallery-img" data-base="${img.src}" alt="${img.title}" onclick="openLightbox(this.src, '${img.title} (${img.photographer || ''})')">
                     <p style="text-align:center; margin-top:0.5rem;">${img.title}</p>
                 </div>
             `).join('');
+
+            document.querySelectorAll('.gallery-img').forEach(img => {
+                const base = img.getAttribute('data-base');
+                applyImageFallback(img, base);
+            });
         }
 
+        // Home page 3×8 grid
         const homeGrid = document.getElementById('home-gallery-grid');
         if (homeGrid) {
             const gridImages = images.slice(0, 24);
             homeGrid.innerHTML = gridImages.map(img => `
-                <img src="${img.src}" alt="${img.title}" loading="lazy">
+                <img class="grid-img" data-base="${img.src}" alt="${img.title}" loading="lazy">
             `).join('');
+
+            document.querySelectorAll('.grid-img').forEach(img => {
+                const base = img.getAttribute('data-base');
+                applyImageFallback(img, base);
+            });
         }
 
+        // Home "Recent Captures" feed (if still present)
         const homeFeed = document.getElementById('home-feed');
         if (homeFeed) {
             const feedImages = images.slice(0, 4);
             homeFeed.innerHTML = feedImages.map(img => `
                 <div class="gallery-card">
-                    <img src="${img.src}" alt="${img.title}" onclick="window.location.href='gallery.html'">
+                    <img class="feed-img" data-base="${img.src}" alt="${img.title}" onclick="window.location.href='gallery.html'">
                 </div>
             `).join('');
+
+            document.querySelectorAll('.feed-img').forEach(img => {
+                const base = img.getAttribute('data-base');
+                applyImageFallback(img, base);
+            });
         }
     } catch (error) {
         console.error('Could not load gallery data:', error);
@@ -117,8 +189,11 @@ document.querySelector('.close-lightbox')?.addEventListener('click', () => {
     document.getElementById('lightbox')?.classList.remove('active');
 });
 
-document.addEventListener('DOMContentLoaded', loadGalleryData);
-
+document.addEventListener('DOMContentLoaded', loadGalleryData);document.addEventListener('DOMContentLoaded', () => {
+    loadGalleryData();
+    loadHeroImages();      // already present from previous step
+    loadEquipmentCards();  // new
+});
 // =============================================
 // 3. BLOG (dynamic posts)
 // =============================================
@@ -311,6 +386,44 @@ if (menuToggle && menuOverlay) {
             menuOverlay.classList.remove('active');
         });
     });
+}
+// =============================================
+// 8. DYNAMIC EQUIPMENT FLIP CARDS
+// =============================================
+async function loadEquipmentCards() {
+    const container = document.getElementById('flip-container');
+    if (!container) return;
+
+    try {
+        const response = await fetch('equipment.json');
+        if (!response.ok) throw new Error('Could not load equipment data');
+        const equipment = await response.json();
+
+        container.innerHTML = equipment.map(eq => `
+            <div class="flip-card" onclick="location.href='booking.html?equip=${eq.equipParam}'">
+                <div class="flip-inner">
+                    <div class="flip-front">
+                        <h3>${eq.name}</h3>
+                        <p>${eq.price}</p>
+                    </div>
+                    <div class="flip-back">
+                        <img class="flip-back-img" data-base="images/${eq.imageBase}">
+                        <span>Book Now →</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // Apply image fallback to all flip-back images
+        document.querySelectorAll('.flip-back-img').forEach(img => {
+            const base = img.getAttribute('data-base');
+            applyImageFallback(img, base);
+        });
+
+    } catch (error) {
+        console.error('Equipment cards failed:', error);
+        container.innerHTML = '<p>Equipment data could not be loaded.</p>';
+    }
 }
 // =============================================
 // 8. DYNAMIC HERO IMAGES (from hero-images.json)
