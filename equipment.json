@@ -6,21 +6,21 @@
     "imageBase": "tak-fsq106"
   },
   {
-    "name": "Celestron RASA 8",
+    "name": "Celestron GSO 8-inch",
     "price": "₹800/hr",
-    "equipParam": "rasa8",
-    "imageBase": "rasa8"
+    "equipParam": "gso-8inch",
+    "imageBase": "gso-8inch"
   },
   {
-    "name": "Sky-Watcher Esprit 120",
+    "name": "William Optics 61-APO",
     "price": "₹600/hr",
-    "equipParam": "esprit120",
-    "imageBase": "esprit120"
+    "equipParam": "wo-61apo",
+    "imageBase": "w0-61apo"
   },
   {
     "name": "RedCat 51",
     "price": "₹500/hr",
-    "equipParam": "redcat51",
-    "imageBase": "redcat51"
+    "equipParam": "redcat-51",
+    "imageBase": "redcat-51"
   }
 ]
