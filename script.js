@@ -66,54 +66,42 @@ window.addEventListener('resize', () => {
 // =============================================
 // IMAGE FALLBACK – tries multiple extensions
 // =============================================
+// =============================================
+// IMAGE FALLBACK – Parallel try all extensions
+// =============================================
 function applyImageFallback(imgElement, basePath) {
-    // basePath example: "images/orion.jpg" or "images/tak-fsq106" (no ext)
-    // If there's an extension, try other extensions; otherwise try all known
     const extensions = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
-    let base, currentExt;
-
-    // Check if basePath already includes an extension
+    let base = basePath;
     const lastDot = basePath.lastIndexOf('.');
     if (lastDot > -1) {
         base = basePath.substring(0, lastDot);
-        currentExt = basePath.substring(lastDot + 1);
-    } else {
-        base = basePath;
-        currentExt = ''; // no extension given, try all
     }
-
     const fallback = 'https://placehold.co/300x200/0b0f19/6C63FF?text=No+Image';
-    imgElement._extIndex = 0;
-    imgElement._extList = extensions;
-    imgElement._base = base;
 
-    function tryNext() {
-        const idx = imgElement._extIndex;
-        if (idx >= imgElement._extList.length) {
-            // All exhausted – use placeholder
-            imgElement.src = fallback;
-            return;
-        }
-        const ext = imgElement._extList[idx];
-        const url = `${base}.${ext}`;
-        const testImg = new Image();
-        testImg.onload = () => {
-            imgElement.src = url;
-        };
-        testImg.onerror = () => {
-            imgElement._extIndex++;
-            tryNext();
-        };
-        testImg.src = url;
-    }
+    // Build an array of URLs to try
+    const urls = extensions.map(ext => `${base}.${ext}`);
 
-    // If a concrete extension was provided, start from that one, then try others
-    if (currentExt && extensions.includes(currentExt)) {
-        // Start with the given extension, then continue through the list
-        imgElement._extList = extensions.filter(e => e !== currentExt);
-        imgElement._extList.unshift(currentExt); // put the original first
-    }
-    tryNext();
+    // Use Promise.any to load the first successful URL
+    const loadPromises = urls.map(url => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve(url);
+            img.onerror = () => resolve(null);  // resolve null to skip
+            img.src = url;
+        });
+    });
+
+    Promise.any(loadPromises)  // Returns first fulfilled (non-null) or all reject
+        .then(url => {
+            if (url) {
+                imgElement.src = url;
+            } else {
+                imgElement.src = fallback;
+            }
+        })
+        .catch(() => {
+            imgElement.src = fallback;  // all failed
+        });
 }
 
 
