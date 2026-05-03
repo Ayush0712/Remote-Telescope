@@ -110,7 +110,7 @@ function applyImageFallback(imgElement, basePath) {
 // =============================================
 async function loadGalleryData() {
     try {
-        const response = await fetch('gallery-data.json');
+        const response = await fetch(`gallery-data.json?v=${Date.now()}`);
         if (!response.ok) throw new Error('Failed to load gallery data');
         const images = await response.json();
 
