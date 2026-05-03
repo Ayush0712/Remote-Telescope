@@ -199,6 +199,8 @@ body::after {
 .hero-content h1 {
     font-size: 3.2rem;
     margin-bottom: 1rem;
+    color: #ffffff;              /* pure white – stands out against the dark overlay */
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0.7);   /* soft glow for legibility */
     line-height: 1.2;
 }
 .hero-background {
