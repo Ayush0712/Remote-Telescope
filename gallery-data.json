@@ -7,15 +7,15 @@
     "equipment": "Takahashi FSQ-106 | ASI2600MC Pro"
   },
   {
-    "src": "images/andromeda.jpg",
-    "title": "Andromeda Galaxy (M31)",
+    "src": "images/M33.png",
+    "title": "Triangulam Galaxy (M33)",
     "photographer": "Priya Singh",
     "target": "Andromeda Galaxy",
     "equipment": "Celestron RASA 8 | ASI2600MC Pro"
   },
   {
-    "src": "images/horsehead.jpg",
-    "title": "Horsehead Nebula",
+    "src": "images/NGC-7000.jpg",
+    "title": "North American Nebula",
     "photographer": "Arjun Mehta",
     "target": "Horsehead Nebula",
     "equipment": "Takahashi FSQ-106 | ASI290MC"
