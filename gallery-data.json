@@ -1,9 +1,9 @@
 [
   {
-    "src": "images/M31.png",
-    "title": "Andromeda Galaxy (M42)",
+    "src": "images/NGC-7000.png",
+    "title": "North American Nebula (NGC-7000)",
     "photographer": "Ayush Sharma",
-    "target": "Orion Nebula",
+    "target": "North American Nebula",
     "equipment": "Takahashi FSQ-106 | ASI2600MC Pro"
   },
   {
@@ -14,10 +14,45 @@
     "equipment": "Celestron RASA 8 | ASI2600MC Pro"
   },
   {
-    "src": "images/NGC-7000.png",
+    "src": "images/NGC7294.png",
     "title": "North American Nebula",
     "photographer": "Arjun Mehta",
     "target": "Horsehead Nebula",
+    "equipment": "Takahashi FSQ-106 | ASI290MC"
+  },
+    {
+    "src": "images/NGC-7000.png",
+    "title": "Helix Nebula (NGC-7294)",
+    "photographer": "Arjun Mehta",
+    "target": "Helix Nebula",
+    "equipment": "Takahashi FSQ-106 | ASI290MC"
+  },
+    {
+    "src": "images/Moon-1.png",
+    "title": "Moon",
+    "photographer": "Arjun Mehta",
+    "target": "Moon",
+    "equipment": "Takahashi FSQ-106 | ASI290MC"
+  },
+    {
+    "src": "images/Moon-4.png",
+    "title": "Moon",
+    "photographer": "Arjun Mehta",
+    "target": "Moon",
+    "equipment": "Takahashi FSQ-106 | ASI290MC"
+  },
+    {
+    "src": "images/NGC2237.png",
+    "title": "Rosette Nebula",
+    "photographer": "Arjun Mehta",
+    "target": "Rosette Nebula",
+    "equipment": "Takahashi FSQ-106 | ASI290MC"
+  }, 
+    {
+    "src": "images/M42.png",
+    "title": "Orion Nebula",
+    "photographer": "Arjun Mehta",
+    "target": "Orion Nebula",
     "equipment": "Takahashi FSQ-106 | ASI290MC"
   }
 ]
