@@ -69,6 +69,9 @@ window.addEventListener('resize', () => {
 // =============================================
 // IMAGE FALLBACK – Parallel try all extensions
 // =============================================
+// =============================================
+// IMAGE FALLBACK – Immediately shows placeholder, then loads real image
+// =============================================
 function applyImageFallback(imgElement, basePath) {
     const extensions = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
     let base = basePath;
@@ -76,32 +79,36 @@ function applyImageFallback(imgElement, basePath) {
     if (lastDot > -1) {
         base = basePath.substring(0, lastDot);
     }
-    const fallback = 'https://placehold.co/300x200/0b0f19/6C63FF?text=No+Image';
 
-    // Build an array of URLs to try
+    // 1. Set a placeholder instantly so the user never sees broken image
+    const placeholder = 'https://placehold.co/300x200/0b0f19/6C63FF?text=Loading…';
+    imgElement.src = placeholder;
+
+    // 2. Build all possible URLs
     const urls = extensions.map(ext => `${base}.${ext}`);
 
-    // Use Promise.any to load the first successful URL
-    const loadPromises = urls.map(url => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve(url);
-            img.onerror = () => resolve(null);  // resolve null to skip
-            img.src = url;
-        });
-    });
-
-    Promise.any(loadPromises)  // Returns first fulfilled (non-null) or all reject
-        .then(url => {
-            if (url) {
-                imgElement.src = url;
-            } else {
-                imgElement.src = fallback;
+    // 3. Try every URL in parallel, use the first one that loads
+    let resolved = false;
+    const tryLoad = (url) => {
+        const testImg = new Image();
+        testImg.onload = () => {
+            if (!resolved) {
+                resolved = true;
+                imgElement.src = url;   // success – replace placeholder
             }
-        })
-        .catch(() => {
-            imgElement.src = fallback;  // all failed
-        });
+        };
+        testImg.onerror = () => {};     // ignore failures
+        testImg.src = url;
+    };
+
+    urls.forEach(url => tryLoad(url));
+
+    // 4. Safety net – if all fail after 5 seconds, keep the generic fallback
+    setTimeout(() => {
+        if (!resolved) {
+            imgElement.src = 'https://placehold.co/300x200/0b0f19/6C63FF?text=No+Image';
+        }
+    }, 5000);
 }
 
 
