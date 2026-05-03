@@ -208,7 +208,7 @@ body::after {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.7;                /* subtle – adjust to your taste */
+    opacity: 0.9;                /* subtle – adjust to your taste */
     z-index: 0;                  /* behind the text */
     pointer-events: none;        /* so clicks pass through to the button */
 }
