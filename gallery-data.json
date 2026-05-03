@@ -14,14 +14,14 @@
     "equipment": "Celestron RASA 8 | ASI2600MC Pro"
   },
   {
-    "src": "images/NGC7294.png",
-    "title": "North American Nebula",
+    "src": "images/M16.png",
+    "title": "Eagle Nebula",
     "photographer": "Arjun Mehta",
-    "target": "Horsehead Nebula",
+    "target": "Eagle Nebula",
     "equipment": "Takahashi FSQ-106 | ASI290MC"
   },
     {
-    "src": "images/NGC-7000.png",
+    "src": "images/NGC7293.png",
     "title": "Helix Nebula (NGC-7294)",
     "photographer": "Arjun Mehta",
     "target": "Helix Nebula",
@@ -49,7 +49,7 @@
     "equipment": "Takahashi FSQ-106 | ASI290MC"
   }, 
     {
-    "src": "images/M42.png",
+    "src": "images/M42-1.png",
     "title": "Orion Nebula",
     "photographer": "Arjun Mehta",
     "target": "Orion Nebula",
