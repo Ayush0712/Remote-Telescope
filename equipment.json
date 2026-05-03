@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Takahashi FSQ-106",
+    "price": "₹1000/hr",
+    "equipParam": "tak-fsq106",
+    "imageBase": "tak-fsq106"
+  },
+  {
+    "name": "Celestron RASA 8",
+    "price": "₹800/hr",
+    "equipParam": "rasa8",
+    "imageBase": "rasa8"
+  },
+  {
+    "name": "Sky-Watcher Esprit 120",
+    "price": "₹600/hr",
+    "equipParam": "esprit120",
+    "imageBase": "esprit120"
+  },
+  {
+    "name": "RedCat 51",
+    "price": "₹500/hr",
+    "equipParam": "redcat51",
+    "imageBase": "redcat51"
+  }
+]
