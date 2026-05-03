@@ -199,6 +199,19 @@ body::after {
     margin-bottom: 1rem;
     line-height: 1.2;
 }
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35;                /* subtle – adjust to your taste */
+    z-index: 0;                  /* behind the text */
+    pointer-events: none;        /* so clicks pass through to the button */
+}
 .price-highlight {
     color: var(--accent);
     font-weight: 800;
