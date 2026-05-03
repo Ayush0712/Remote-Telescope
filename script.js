@@ -72,7 +72,13 @@ window.addEventListener('resize', () => {
 // =============================================
 // IMAGE FALLBACK – Immediately shows placeholder, then loads real image
 // =============================================
+// =============================================
+// IMAGE FALLBACK – Silent, no placeholder
+// =============================================
 function applyImageFallback(imgElement, basePath) {
+    // Make the image totally invisible until we have a real source
+    imgElement.style.visibility = 'hidden';
+
     const extensions = ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG'];
     let base = basePath;
     const lastDot = basePath.lastIndexOf('.');
@@ -80,33 +86,29 @@ function applyImageFallback(imgElement, basePath) {
         base = basePath.substring(0, lastDot);
     }
 
-    // 1. Set a placeholder instantly so the user never sees broken image
-    const placeholder = 'https://placehold.co/300x200/0b0f19/6C63FF?text=Loading…';
-    imgElement.src = placeholder;
-
-    // 2. Build all possible URLs
     const urls = extensions.map(ext => `${base}.${ext}`);
 
-    // 3. Try every URL in parallel, use the first one that loads
     let resolved = false;
+
     const tryLoad = (url) => {
         const testImg = new Image();
         testImg.onload = () => {
             if (!resolved) {
                 resolved = true;
-                imgElement.src = url;   // success – replace placeholder
+                imgElement.src = url;
+                imgElement.style.visibility = 'visible';
             }
         };
-        testImg.onerror = () => {};     // ignore failures
+        testImg.onerror = () => {};
         testImg.src = url;
     };
 
     urls.forEach(url => tryLoad(url));
 
-    // 4. Safety net – if all fail after 5 seconds, keep the generic fallback
+    // If after 5 seconds nothing has loaded, stay invisible (no fallback)
     setTimeout(() => {
         if (!resolved) {
-            imgElement.src = 'https://placehold.co/300x200/0b0f19/6C63FF?text=No+Image';
+            imgElement.style.visibility = 'hidden';
         }
     }, 5000);
 }
