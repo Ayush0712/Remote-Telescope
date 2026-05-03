@@ -217,9 +217,16 @@ body::after {
     pointer-events: none;        /* so clicks pass through to the button */
 }
 .price-highlight {
-    color: #b388ff;
-    font-weight: 800;
-    text-shadow: 0 0 12px rgba(179, 136, 255, 0.6); 
+    color: #FFD966;                        /* warm, bright gold – visible against any background */
+    font-weight: 900;
+    text-shadow:
+        0 0 10px #000000,                 /* tight black shadow */
+        0 0 20px #000000,                 /* medium black shadow */
+        0 0 40px rgba(255, 217, 102, 0.8); /* golden glow */
+    background: rgba(0, 0, 0, 0.45);       /* subtle dark patch behind the text */
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    display: inline-block;                 /* so background hugs the text */
 }
 .hero-content p {
     font-size: 1.2rem;
