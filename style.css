@@ -291,56 +291,106 @@ body::after {
     color: var(--text-secondary);
     margin-bottom: 2rem;
 }
+/* ============================================
+   CLICK‑FLIP CARDS (preview image on front)
+   ============================================ */
 .flip-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
 }
+
 .flip-card {
     background: transparent;
-    height: 250px;
+    height: 280px;
     perspective: 1000px;
     cursor: pointer;
 }
+
 .flip-inner {
     position: relative;
     width: 100%;
     height: 100%;
-    transition: transform 0.6s;
+    transition: transform 0.5s ease;
     transform-style: preserve-3d;
 }
-.flip-card:hover .flip-inner {
+
+/* Flip when the card has the .flipped class */
+.flip-card.flipped .flip-inner {
     transform: rotateY(180deg);
 }
+
 .flip-front, .flip-back {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
     border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid rgba(108, 99, 255, 0.2);
+}
+
+/* Front side – faint image underneath text */
+.flip-front {
+    background: var(--card-bg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(108, 99, 255, 0.2);
+    z-index: 2;
 }
+.flip-front h3 {
+    color: var(--text);
+    margin-bottom: 0.3rem;
+}
+.flip-front p {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* Faint preview image absolutely positioned on the front */
+.flip-front .front-preview-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+    z-index: -1;            /* behind the text */
+    border-radius: var(--radius);
+}
+
+/* Back side – full brightness image + button */
 .flip-back {
+    background: rgba(20, 26, 41, 0.95);
     transform: rotateY(180deg);
-    background: rgba(20, 26, 41, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
 }
 .flip-back img {
     width: 100%;
     height: 150px;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
-.flip-back span {
-    color: var(--accent);
+.flip-back .book-now-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), #e942f5);
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
     font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.flip-back .book-now-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px var(--accent-glow);
 }
 
 /* Page Hero (shared for inner pages) */
