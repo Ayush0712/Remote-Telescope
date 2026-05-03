@@ -386,34 +386,51 @@ if (menuToggle && menuOverlay) {
 // =============================================
 // 8. DYNAMIC EQUIPMENT FLIP CARDS
 // =============================================
+// =============================================
+// 8. DYNAMIC EQUIPMENT FLIP CARDS (faint preview + click to flip)
+// =============================================
 async function loadEquipmentCards() {
     const container = document.getElementById('flip-container');
     if (!container) return;
 
     try {
-        const response = await fetch('equipment.json');
+        const response = await fetch(`equipment.json?v=${Date.now()}`);
         if (!response.ok) throw new Error('Could not load equipment data');
         const equipment = await response.json();
 
         container.innerHTML = equipment.map(eq => `
-            <div class="flip-card" onclick="location.href='booking.html?equip=${eq.equipParam}'">
+            <div class="flip-card">
                 <div class="flip-inner">
                     <div class="flip-front">
+                        <!-- Faint preview image -->
+                        <img class="front-preview-img" data-base="images/${eq.imageBase}" alt="">
                         <h3>${eq.name}</h3>
                         <p>${eq.price}</p>
                     </div>
                     <div class="flip-back">
-                        <img class="flip-back-img" data-base="images/${eq.imageBase}">
-                        <span>Book Now →</span>
+                        <!-- Full brightness image -->
+                        <img class="back-full-img" data-base="images/${eq.imageBase}" alt="${eq.name}">
+                        <a href="booking.html?equip=${eq.equipParam}" class="book-now-btn">Book Now</a>
                     </div>
                 </div>
             </div>
         `).join('');
 
-        // Apply image fallback to all flip-back images
-        document.querySelectorAll('.flip-back-img').forEach(img => {
+        // Apply image fallback to both front-preview and back-full images
+        document.querySelectorAll('.front-preview-img, .back-full-img').forEach(img => {
             const base = img.getAttribute('data-base');
             applyImageFallback(img, base);
+        });
+
+        // Add click listeners to all cards to toggle flip
+        document.querySelectorAll('.flip-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Prevent the click from accidentally following a link that may be inside
+                // Only toggle if the click didn't happen on the Book Now button itself
+                if (!e.target.closest('a')) {
+                    this.classList.toggle('flipped');
+                }
+            });
         });
 
     } catch (error) {
