@@ -1327,7 +1327,7 @@ input, select, textarea {
 }
 .equipment-image-wrapper {
     width: 100%;
-    aspect-ratio: 16 / 9;        /* or 4 / 3, depending on your photos */
+    aspect-ratio: 4 / 3;        /* or 4 / 3, depending on your photos */
     margin-top: 0.5rem;
     border-radius: 8px;
     max-height: 180px;
