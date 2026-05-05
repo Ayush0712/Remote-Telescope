@@ -1095,14 +1095,18 @@ img, video, canvas {
     margin-left: 1rem;
 }
 
-/* Mobile: show 1-2 cards */
+/* Mobile: 1 full card, perfectly snapped */
 @media (max-width: 768px) {
-    .carousel-card {
-        flex: 0 0 80%;          /* one card takes 80% of the screen */
+    .carousel-track {
+        gap: 0;                     /* remove the gap so the card fills the width */
+        scroll-snap-type: x mandatory;
     }
-}
-@media (max-width: 480px) {
     .carousel-card {
-        flex: 0 0 85%;
+        flex: 0 0 100%;             /* one card = 100% of the track */
+        scroll-snap-align: center;  /* always snap exactly into view */
+        border-radius: 0;           /* optional – remove rounded corners on mobile for edge‑to‑edge look */
+    }
+    .carousel-card img {
+        height: 220px;              /* slightly taller for mobile screens */
     }
 }
