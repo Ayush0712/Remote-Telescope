@@ -11,46 +11,89 @@
 <body>
     <canvas id="stars-canvas"></canvas>
 
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="booking.html">Book Now</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </div>
-</nav>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="booking.html">Book Now</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="menu-overlay" id="menu-overlay">
-    <div class="overlay-content">
-        <a href="index.html" class="overlay-link">Home</a>
-        <a href="booking.html" class="overlay-link">Book Now</a>
-        <a href="gallery.html" class="overlay-link">Gallery</a>
-        <a href="about.html" class="overlay-link">About</a>
-        <a href="blog.html" class="overlay-link">Blog</a>
-        <a href="contact.html" class="overlay-link">Contact</a>
+        <div class="overlay-content">
+            <a href="index.html" class="overlay-link">Home</a>
+            <a href="booking.html" class="overlay-link">Book Now</a>
+            <a href="gallery.html" class="overlay-link">Gallery</a>
+            <a href="about.html" class="overlay-link">About</a>
+            <a href="blog.html" class="overlay-link">Blog</a>
+            <a href="contact.html" class="overlay-link">Contact</a>
+        </div>
     </div>
-</div>
 
     <section class="page-hero">
-        <h1>RemoteScope Journal</h1>
-        <p>Tips, tutorials, and behind‑the‑scenes.</p>
+        <h1>The RemoteScope Journal</h1>
+        <p>Latest space news, astrophotography tips, and discoveries.</p>
     </section>
 
-    <div id="blog-container" class="blog-grid"></div>
+    <div class="blog-grid" id="blog-container">
+        <!-- Cards injected by JavaScript -->
+    </div>
 
     <footer>
         <p>© 2026 RemoteScope. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // ------- Load latest space news -------
+        async function loadBlogPosts() {
+            const container = document.getElementById('blog-container');
+            if (!container) return;
+
+            const API_URL = 'https://api.spaceflightnewsapi.net/v4/articles/?limit=9';
+            container.innerHTML = '<p>Loading space news…</p>';
+
+            try {
+                const resp = await fetch(API_URL);
+                if (!resp.ok) throw new Error('Failed to fetch articles');
+                const data = await resp.json();
+                const articles = data.results || [];
+
+                if (!articles.length) {
+                    container.innerHTML = '<p>No articles found. Please check back later.</p>';
+                    return;
+                }
+
+                container.innerHTML = articles.map(article => `
+                    <article class="blog-card">
+                        <img src="${article.image_url}" alt="${article.title}" loading="lazy" onerror="this.src='https://placehold.co/600x300/0b0f19/6C63FF?text=Space+News';">
+                        <div class="blog-card-content">
+                            <h3>${article.title}</h3>
+                            <p>${article.summary?.substring(0, 150)}…</p>
+                            <a href="${article.url}" target="_blank" rel="noopener" class="btn-secondary">Read More</a>
+                        </div>
+                    </article>
+                `).join('');
+
+            } catch (err) {
+                console.error('Blog load failed:', err);
+                container.innerHTML = '<p>Could not load space news. Please try again later.</p>';
+            }
+        }
+
+        // Load on page ready
+        window.addEventListener('DOMContentLoaded', loadBlogPosts);
+    </script>
 </body>
 </html>
