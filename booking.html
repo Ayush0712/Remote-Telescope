@@ -25,7 +25,7 @@
         </div>
     </nav>
 
-    <div class="booking-container">
+    <div class="booking-outer">
         <!-- Left Column: Booking Form -->
         <div class="booking-form-panel">
             <h1>Configure Your Session</h1>
@@ -43,7 +43,6 @@
                     <option value="rasa8" data-price="800">RASA 8 – ₹800/hr</option>
                     <option value="tak-fsq106" data-price="1000">Takahashi FSQ-106 – ₹1000/hr</option>
                 </select>
-                <!-- Telescope image preview -->
                 <img id="equipment-image" src="" alt="Telescope" style="display:none; width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-top:1rem;">
             </div>
 
@@ -100,6 +99,17 @@
             <div id="api-message" style="margin-top:1rem; text-align:center;"></div>
         </div>
 
+        <!-- Middle Column: Best Targets This Month -->
+        <div class="targets-panel" id="targets-panel">
+            <h2><i class="fas fa-crosshairs"></i> Best Targets <span id="target-month"></span></h2>
+            <div class="targets-grid" id="targets-grid">
+                <div class="target-card skeleton">Loading…</div>
+                <div class="target-card skeleton">Loading…</div>
+                <div class="target-card skeleton">Loading…</div>
+            </div>
+            <p class="targets-note">Data: NASA APOD archive</p>
+        </div>
+
         <!-- Right Column: Weather Panel -->
         <div class="weather-panel" id="weather-panel">
             <h2><i class="fas fa-cloud-sun"></i> Spiti Weather</h2>
@@ -114,56 +124,42 @@
 
     <script src="script.js"></script>
     <script>
-        // ========== Telescope image mapping ==========
+        // ---- Telescope image preview (same as before) ----
         const equipmentImages = {
             'redcat51': 'images/redcat51.jpg',
             'esprit120': 'images/esprit120.jpg',
             'rasa8': 'images/rasa8.jpg',
             'tak-fsq106': 'images/tak-fsq106.jpg'
         };
-
-        // Update price AND show/hide equipment image
-        const originalUpdatePrice = updatePrice; // keep reference to existing function (defined in script.js)
+        const originalUpdatePrice = updatePrice;
         updatePrice = function() {
-            originalUpdatePrice(); // call existing price logic
+            originalUpdatePrice();
             const equipSelect = document.getElementById('equipment-select');
             const img = document.getElementById('equipment-image');
             const selectedValue = equipSelect.value;
             if (equipmentImages[selectedValue]) {
                 img.src = equipmentImages[selectedValue];
-img.onerror = () => {
-    img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect width="200" height="150" fill="%23111"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-size="18" font-family="Arial">Telescope</text></svg>';
-    img.onerror = null;
-};
                 img.style.display = 'block';
             } else {
                 img.style.display = 'none';
             }
         };
-
-        // After page load, trigger once to set initial image (if any)
         window.addEventListener('DOMContentLoaded', () => {
-            // ensure updatePrice runs after all elements are ready
-            if (document.getElementById('equipment-select')) {
-                updatePrice();
-            }
+            if (document.getElementById('equipment-select')) updatePrice();
         });
 
-        // ========== Real-time Booking API Submission ==========
-        const BOOKING_API_URL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/book'; // <-- REPLACE with your actual Funnel URL
-
+        // ---- Booking API submission (same as before) ----
+        const BOOKING_API_URL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/book';
         function submitBookingAPI() {
             const email = document.getElementById('user-email').value.trim();
             const date = document.getElementById('booking-date').value;
             const startTime = document.getElementById('start-time').value;
             const endTime = document.getElementById('end-time').value;
             const msgDiv = document.getElementById('api-message');
-
             if (!email || !date || !startTime || !endTime) {
                 msgDiv.textContent = '❌ Please fill in all fields.';
                 return;
             }
-
             const start = new Date(`${date}T${startTime}:00`);
             let end = new Date(`${date}T${endTime}:00`);
             if (end <= start) end.setDate(end.getDate() + 1);
@@ -172,8 +168,6 @@ img.onerror = () => {
                 msgDiv.textContent = '❌ End time must be after start time.';
                 return;
             }
-
-            // Gather selected equipment details
             const equipSelect = document.getElementById('equipment-select');
             const telescopeValue = equipSelect.value;
             const telescopeName = equipSelect.options[equipSelect.selectedIndex].text;
@@ -183,22 +177,13 @@ img.onerror = () => {
             const filterCheckboxes = document.querySelectorAll('.filter-checkboxes input:checked');
             const filters = Array.from(filterCheckboxes).map(cb => cb.value.toUpperCase());
             const dithering = document.getElementById('dither').checked;
-
             msgDiv.textContent = '⏳ Processing booking…';
-
             const payload = {
-                email: email,
-                date: date,
-                start_time: startTime,
-                duration: duration.toString(),
-                telescope: telescopeValue,
-                telescope_name: telescopeName,
-                camera: cameraValue,
-                camera_name: cameraName,
-                filters: filters,
-                dithering: dithering
+                email, date, start_time: startTime, duration: duration.toString(),
+                telescope: telescopeValue, telescope_name: telescopeName,
+                camera: cameraValue, camera_name: cameraName,
+                filters, dithering
             };
-
             fetch(BOOKING_API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -206,17 +191,62 @@ img.onerror = () => {
             })
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    msgDiv.textContent = '❌ ' + data.error;
-                } else {
-                    msgDiv.textContent = '✅ Booking confirmed! Check your email for access details.';
-                }
+                if (data.error) msgDiv.textContent = '❌ ' + data.error;
+                else msgDiv.textContent = '✅ Booking confirmed! Check your email for access details.';
             })
             .catch(error => {
                 msgDiv.textContent = '❌ Network error. Please try again.';
                 console.error(error);
             });
         }
+
+        // ---- Best Targets loader ----
+        async function loadTargets() {
+            const grid = document.getElementById('targets-grid');
+            const monthSpan = document.getElementById('target-month');
+            if (!grid) return;
+
+            const now = new Date();
+            const monthName = now.toLocaleString('default', { month: 'long' });
+            monthSpan.textContent = `for ${monthName}`;
+
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const startDate = `${year}-${month}-01`;
+            const endDate = `${year}-${month}-30`;
+
+            // Call your Flask proxy (see below)
+            const proxyURL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/apod-proxy';
+            // const proxyURL = 'http://localhost:5000/apod-proxy';   // for testing
+
+            try {
+                const resp = await fetch(`${proxyURL}?start_date=${startDate}&end_date=${endDate}`);
+                const data = await resp.json();
+                // Pick the top 3-4 entries (you can add more clever filtering later)
+                const entries = (data || []).filter(e => e.media_type === 'image').slice(0, 4);
+                if (entries.length === 0) throw new Error('No images found');
+
+                grid.innerHTML = entries.map(e => `
+                    <div class="target-card">
+                        <img src="${e.url}" alt="${e.title}" loading="lazy">
+                        <div class="target-card-body">
+                            <h4>${e.title}</h4>
+                            <p>${e.explanation?.substring(0, 80)}…</p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.warn('Targets fetch failed, using static fallback');
+                // Static fallback – you can replace the images with real ones later
+                grid.innerHTML = `
+                    <div class="target-card"><img src="https://apod.nasa.gov/apod/image/2304/M31\_Huang\_960.jpg" alt="M31"><div class="target-card-body"><h4>M31 Andromeda</h4><p>Always a showstopper in April</p></div></div>
+                    <div class="target-card"><img src="https://apod.nasa.gov/apod/image/2304/Orion\_bell\_960.jpg" alt="Orion"><div class="target-card-body"><h4>Orion Nebula</h4><p>Winter classic, still visible early</p></div></div>
+                    <div class="target-card"><img src="https://apod.nasa.gov/apod/image/2304/M51\_HST\_960.jpg" alt="M51"><div class="target-card-body"><h4>Whirlpool Galaxy</h4><p>Perfect for galaxy season</p></div></div>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadTargets);
     </script>
 </body>
 </html>
