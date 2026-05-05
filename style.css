@@ -1097,6 +1097,7 @@ img, video, canvas {
     overflow-x: auto;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
+    touch-action: pan-y pinch-zoom; 
     -webkit-overflow-scrolling: touch;
     padding: 0.5rem 0;
     flex: 1;
