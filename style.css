@@ -408,20 +408,22 @@ body::after {
 /* Booking Page Layout */
 .booking-container {
     display: grid;
-    grid-template-columns: minmax(0, 700px) 350px;
-    justify-content: center;          /* centres the whole grid when viewport is wider than the columns */
+    grid-template-columns: 1fr 350px;
     gap: 2rem;
-    max-width: 1400px;
-    margin: 2rem auto;
-    padding: 0 1rem;                  /* less side padding */
+    max-width: none;            /* remove the cap, let it stretch full width */
+    margin: 2rem 0;             /* remove auto‑centering */
+    padding: 0 2rem;            /* a little breathing room on the edges */
 }
 .booking-form-panel {
+    max-width: 800px;           /* keep the form at a readable width */
+    width: 100%;
+    justify-self: center;       /* center the form inside its column */
+    margin: 0 auto;             /* fallback centering */
+    padding: 2rem;
     background: var(--card-bg);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(108, 99, 255, 0.2);
     border-radius: var(--radius);
-    padding: 2rem;
-    overflow: visible;          /* no scroll, expands naturally */
 }
 .weather-panel {
     background: var(--card-bg);
