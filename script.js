@@ -219,6 +219,7 @@ if (blogContainer) {
 function updatePrice() {
     const equipSelect = document.getElementById('equipment-select');
     const cameraSelect = document.getElementById('camera-select');
+        if (!equipSelect || !equipSelect.selectedOptions.length || !cameraSelect || !cameraSelect.selectedOptions.length) return;
     const basePrice = parseInt(equipSelect.selectedOptions[0].dataset.price);
     const cameraExtra = parseInt(cameraSelect.selectedOptions[0].dataset.price);
     const filters = Array.from(document.querySelectorAll('.filter-checkboxes input:checked'));
