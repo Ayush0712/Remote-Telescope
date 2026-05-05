@@ -185,47 +185,36 @@ async function loadCarouselTargets() {
 const track = document.getElementById('carousel-track');
 const leftBtn = document.getElementById('carousel-left');
 const rightBtn = document.getElementById('carousel-right');
-if (!track) return;
+    if (!track) return;
 
-// Helper: get width of one carousel card
-function getCardWidth() {
-    const firstCard = track.querySelector('.carousel-card');
-    return firstCard ? firstCard.offsetWidth : 300;
-}
+    // Helper: get width of one carousel card
+    function getCardWidth() {
+        const firstCard = track.querySelector('.carousel-card');
+        return firstCard ? firstCard.offsetWidth : 300;
+    }
 
-// Scroll left (with loop)
-leftBtn?.addEventListener('click', () => {
-    const cardWidth = getCardWidth();
-    // If we are at the very start (scrollLeft ≈ 0), jump to the end
-    if (track.scrollLeft <= 1) {
-        track.scrollTo({ left: track.scrollWidth - track.clientWidth, behavior: 'smooth' });
-    } else {
-        track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-    }
-});
-        // Auto‑loop when the user has swiped past the end (works on mobile and desktop)
-track.addEventListener('scrollend', () => {
-    const maxScroll = track.scrollWidth - track.clientWidth;
-    if (track.scrollLeft >= maxScroll - 1) {
-        // Reached the end → jump to start
-        track.scrollTo({ left: 0, behavior: 'instant' });
-    } else if (track.scrollLeft <= 1) {
-        // Reached the start → jump to end (optional – remove if you don’t want loop both ways)
-         track.scrollTo({ left: maxScroll, behavior: 'instant' });
-    }
-});
+    // Scroll left (with loop)
+    leftBtn?.addEventListener('click', () => {
+        const cardWidth = getCardWidth();
+        // If at the very start, jump to the end
+        if (track.scrollLeft <= 1) {
+            track.scrollTo({ left: track.scrollWidth - track.clientWidth, behavior: 'smooth' });
+        } else {
+            track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        }
+    });
 
-// Scroll right (with loop)
-rightBtn?.addEventListener('click', () => {
-    const cardWidth = getCardWidth();
-    const maxScroll = track.scrollWidth - track.clientWidth;
-    // If we are at the very end (or close), jump to the start
-    if (track.scrollLeft >= maxScroll - 1) {
-        track.scrollTo({ left: 0, behavior: 'smooth' });
-    } else {
-        track.scrollBy({ left: cardWidth, behavior: 'smooth' });
-    }
-});
+    // Scroll right (with loop)
+    rightBtn?.addEventListener('click', () => {
+        const cardWidth = getCardWidth();
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        // If at the very end, jump to the start
+        if (track.scrollLeft >= maxScroll - 1) {
+            track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        }
+    });
     });
 </script>
 </body>
