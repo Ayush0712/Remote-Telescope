@@ -133,61 +133,50 @@
     <script src="script.js"></script>
     <script>
     // ---- Best Targets Carousel Loader ----
-    async function loadCarouselTargets() {
-        const track = document.getElementById('carousel-track');
-        const monthSpan = document.getElementById('carousel-month');
-        if (!track || !monthSpan) return;
+// ---- Monthly Targets Carousel (static JSON) ----
+async function loadCarouselTargets() {
+    const track = document.getElementById('carousel-track');
+    const monthSpan = document.getElementById('carousel-month');
+    if (!track || !monthSpan) return;
 
-        const now = new Date();
-        const monthName = now.toLocaleString('default', { month: 'long' });
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const todayStr = now.toISOString().split('T')[0];
-        monthSpan.textContent = `${monthName} ${year}`;
+    const now = new Date();
+    const monthName = now.toLocaleString('default', { month: 'long' });
+    monthSpan.textContent = `${monthName} ${now.getFullYear()}`;
 
-        // Use the same Flask proxy as the booking page
-        const proxyBase = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000';
-        const metaUrl = `${proxyBase}/apod-proxy?start_date=${year}-${month}-01&end_date=${todayStr}`;
+    try {
+        // Load the static JSON file
+        const response = await fetch('monthly-targets.json');
+        if (!response.ok) throw new Error('JSON not found');
+        const targets = await response.json();
 
-        try {
-            const resp = await fetch(metaUrl);
-            if (!resp.ok) throw new Error('HTTP ' + resp.status);
-            const data = await resp.json();
-            const entries = (data || []).filter(e => e.media_type === 'image').slice(0, 12);
-            if (entries.length === 0) throw new Error('No image entries');
+        if (!targets.length) throw new Error('No targets');
 
-            track.innerHTML = entries.map(e => {
-                const imgUrl = `${proxyBase}/apod-image?url=${encodeURIComponent(e.url)}`;
-                return `
-                    <div class="carousel-card">
-                        <img src="${imgUrl}" alt="${e.title}" loading="lazy">
-                        <div class="carousel-card-body">
-                            <h4>${e.title}</h4>
-                            <p>${(e.explanation || '').substring(0, 70)}…</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        } catch (err) {
-            console.warn('Carousel targets failed, showing static fallback');
-            track.innerHTML = [
-                { title: 'M101 Pinwheel Galaxy', desc: 'Face‑on spiral, galaxy season favourite', img: 'https://placehold.co/300x200/1a1f35/6C63FF?text=M101' },
-                { title: 'Orion Nebula', desc: 'Winter classic, always a showstopper', img: 'https://placehold.co/300x200/1a1f35/6C63FF?text=Orion' },
-                { title: 'M51 Whirlpool Galaxy', desc: 'Interacting pair with great detail', img: 'https://placehold.co/300x200/1a1f35/6C63FF?text=M51' },
-                { title: 'NGC 7000 North America', desc: 'Bright emission nebula in Cygnus', img: 'https://placehold.co/300x200/1a1f35/6C63FF?text=North+America' },
-                { title: 'IC 5070 Pelican', desc: 'Colourful H‑II region', img: 'https://placehold.co/300x200/1a1f35/6C63FF?text=Pelican' },
-                { title: 'Pleiades M45', desc: 'Beautiful open cluster', img: 'https://placehold.co/300x200/1a1f35/6C63FF?text=Pleiades' }
-            ].map(t => `
-                <div class="carousel-card">
-                    <img src="${t.img}" alt="${t.title}">
-                    <div class="carousel-card-body">
-                        <h4>${t.title}</h4>
-                        <p>${t.desc}</p>
-                    </div>
+        track.innerHTML = targets.map(t => `
+            <div class="carousel-card">
+                <img src="${t.image}" alt="${t.name}" loading="lazy">
+                <div class="carousel-card-body">
+                    <h4>${t.name}</h4>
+                    <p>${t.description}</p>
                 </div>
-            `).join('');
-        }
+            </div>
+        `).join('');
+    } catch (err) {
+        console.warn('Monthly targets failed, showing fallback');
+        // Simple fallback with a few hard‑coded targets (optional)
+        track.innerHTML = [
+            { name: 'M31 Andromeda', img: 'images/targets/m31.jpg', desc: 'Always breathtaking.' },
+            { name: 'Orion Nebula', img: 'images/targets/orion.jpg', desc: 'A winter classic.' }
+        ].map(t => `
+            <div class="carousel-card">
+                <img src="${t.img}" alt="${t.name}">
+                <div class="carousel-card-body">
+                    <h4>${t.name}</h4>
+                    <p>${t.desc}</p>
+                </div>
+            </div>
+        `).join('');
     }
+}
 
     // Arrow button handlers
     document.addEventListener('DOMContentLoaded', () => {
