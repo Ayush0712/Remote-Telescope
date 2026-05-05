@@ -16,7 +16,7 @@
 }
 
 body {
-    background: transparent;   /* ← was var(--bg-deep), which hid the canvas */
+    background: transparent;
     color: var(--text);
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
@@ -52,14 +52,14 @@ body::after {
 }
 .grid-3x8 {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);  /* 3 columns */
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-top: 2rem;
 }
 .grid-3x8 img {
     width: 100%;
-    height: 180px;           /* consistent row height */
-    object-fit: cover;       /* images resize automatically */
+    height: 180px;
+    object-fit: cover;
     border-radius: var(--radius);
     transition: transform 0.3s;
     cursor: pointer;
@@ -192,13 +192,13 @@ body::after {
 }
 .hero-content {
     max-width: 800px;
-    z-index: 1;
-    color: #ffffff;              /* pure white – stands out against the dark overlay */
-    text-shadow: 0 0 30px rgba(0, 0, 0, 0.7);   /* soft glow for legibility */
+    z-index: 2;
+    color: #ffffff;
+    text-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
 }
 .hero-content h1 {
     font-size: 3.2rem;
-    color: #ffffff;          /* was var(--text-secondary) – now pure white */
+    color: #ffffff;
     margin-bottom: 1rem;
     text-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     line-height: 1.2;
@@ -212,21 +212,21 @@ body::after {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.9;                /* subtle – adjust to your taste */
-    z-index: 0;                  /* behind the text */
-    pointer-events: none;        /* so clicks pass through to the button */
+    opacity: 0.9;
+    z-index: 0;
+    pointer-events: none;
 }
 .price-highlight {
-    color: #FFD966;                        /* warm, bright gold – visible against any background */
+    color: #FFD966;
     font-weight: 900;
     text-shadow:
-        0 0 10px #000000,                 /* tight black shadow */
-        0 0 20px #000000,                 /* medium black shadow */
-        0 0 40px rgba(255, 217, 102, 0.8); /* golden glow */
-    background: rgba(0, 0, 0, 0.45);       /* subtle dark patch behind the text */
+        0 0 10px #000000,
+        0 0 20px #000000,
+        0 0 40px rgba(255, 217, 102, 0.8);
+    background: rgba(0, 0, 0, 0.45);
     padding: 0.2rem 0.6rem;
     border-radius: 8px;
-    display: inline-block;                 /* so background hugs the text */
+    display: inline-block;
 }
 .hero-content p {
     font-size: 1.2rem;
@@ -246,10 +246,10 @@ body::after {
 }
 .hero-images img {
     position: absolute;
-    border-radius: 12px;      /* subtle rounded corners, not a circle */
+    border-radius: 12px;
     opacity: 0.6;
     animation: float 6s infinite alternate;
-    object-fit: cover;        /* keep images square even if source isn't */
+    object-fit: cover;
 }
 .img1 { top: 8%; left: 5%; width: 180px; height: 180px; }
 .img2 { top: 10%; right: 8%; width: 200px; height: 200px; }
@@ -300,22 +300,17 @@ body::after {
     color: var(--text-secondary);
     margin-bottom: 2rem;
 }
-/* ============================================
-   CLICK‑FLIP CARDS (preview image on front)
-   ============================================ */
 .flip-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
 }
-
 .flip-card {
     background: transparent;
     height: 280px;
     perspective: 1000px;
     cursor: pointer;
 }
-
 .flip-inner {
     position: relative;
     width: 100%;
@@ -323,12 +318,9 @@ body::after {
     transition: transform 0.5s ease;
     transform-style: preserve-3d;
 }
-
-/* Flip when the card has the .flipped class */
 .flip-card.flipped .flip-inner {
     transform: rotateY(180deg);
 }
-
 .flip-front, .flip-back {
     position: absolute;
     width: 100%;
@@ -338,8 +330,6 @@ body::after {
     overflow: hidden;
     border: 1px solid rgba(108, 99, 255, 0.2);
 }
-
-/* Front side – faint image underneath text */
 .flip-front {
     background: var(--card-bg);
     display: flex;
@@ -357,8 +347,6 @@ body::after {
     color: var(--accent);
     font-weight: 600;
 }
-
-/* Faint preview image absolutely positioned on the front */
 .flip-front .front-preview-img {
     position: absolute;
     top: 0; left: 0;
@@ -366,11 +354,9 @@ body::after {
     height: 100%;
     object-fit: cover;
     opacity: 0.4;
-    z-index: -1;            /* behind the text */
+    z-index: -1;
     border-radius: var(--radius);
 }
-
-/* Back side – full brightness image + button */
 .flip-back {
     background: rgba(20, 26, 41, 0.95);
     transform: rotateY(180deg);
@@ -428,16 +414,22 @@ body::after {
     margin: 2rem auto;
     padding: 0 2rem;
 }
-.booking-form-panel, .weather-panel {
+.booking-form-panel {
     background: var(--card-bg);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(108, 99, 255, 0.2);
     border-radius: var(--radius);
-    padding: 1.2rem;
-    max-height: 500px;                /* limit height */
-    overflow-y: auto;                 /* enables scrollbar */
-    display: flex;
-    flex-direction: column;
+    padding: 2rem;
+    overflow: visible;          /* no scroll, expands naturally */
+}
+.weather-panel {
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    max-height: 70vh;           /* only weather panel scrolls if needed */
+    overflow-y: auto;
 }
 .booking-form-panel h1 {
     font-size: 1.8rem;
@@ -501,7 +493,7 @@ select, input[type="date"], input[type="time"], input[type="email"] {
     width: 100%;
 }
 
-/* Weather Panel */
+/* Weather Panel Details */
 .weather-panel h2 {
     font-size: 1.3rem;
     margin-bottom: 0.8rem;
@@ -539,7 +531,6 @@ select, input[type="date"], input[type="time"], input[type="email"] {
 .weather-card .temps {
     font-weight: 600;
 }
-/* Custom scrollbar (optional) */
 .weather-panel::-webkit-scrollbar {
     width: 5px;
 }
@@ -686,6 +677,9 @@ footer {
     .booking-container {
         grid-template-columns: 1fr;
     }
+    .weather-panel {
+        max-height: none;          /* let it be full height on mobile */
+    }
     .about-flex {
         flex-direction: column;
         text-align: center;
@@ -700,10 +694,6 @@ footer {
         display: none;
     }
 }
-/* ============================================
-   MOBILE & TABLET RESPONSIVENESS
-   ============================================ */
-
 /* General typography scale down */
 @media (max-width: 768px) {
   .hero-content h1 {
@@ -720,17 +710,15 @@ footer {
   }
 }
 
-/* Navigation: hide links, show a hamburger later (optional) */
 @media (max-width: 768px) {
   .nav-links {
-    display: none;          /* You can later turn this into a mobile menu */
+    display: none;
   }
   .nav-container {
     justify-content: space-between;
   }
 }
 
-/* Trust bar stacking */
 @media (max-width: 768px) {
   .trust-bar {
     flex-direction: column;
@@ -740,7 +728,6 @@ footer {
   }
 }
 
-/* Equipment flip cards: 2 columns on tablet, 1 on small phone */
 @media (max-width: 900px) {
   .flip-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -752,7 +739,6 @@ footer {
   }
 }
 
-/* Features grid: 2 columns on tablet, 1 on mobile */
 @media (max-width: 768px) {
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -764,7 +750,6 @@ footer {
   }
 }
 
-/* 3x8 image grid: 2 columns on tablet, 1 on mobile */
 @media (max-width: 768px) {
   .grid-3x8 {
     grid-template-columns: repeat(2, 1fr);
@@ -776,24 +761,12 @@ footer {
   }
 }
 
-/* Testimonials: stack on mobile */
 @media (max-width: 600px) {
   .testimonial-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Booking page: stack the two columns (form + weather) */
-@media (max-width: 768px) {
-  .booking-container {
-    grid-template-columns: 1fr;
-  }
-  .weather-panel {
-    margin-top: 2rem;
-  }
-}
-
-/* About page: stack image & text */
 @media (max-width: 768px) {
   .about-flex {
     flex-direction: column;
@@ -805,7 +778,6 @@ footer {
   }
 }
 
-/* Equipment list on about page: 2 cols then 1 */
 @media (max-width: 768px) {
   .equipment-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -817,21 +789,18 @@ footer {
   }
 }
 
-/* Gallery masonry: adjust columns */
 @media (max-width: 600px) {
   .masonry-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
 
-/* Blog grid: 1 column on mobile */
 @media (max-width: 600px) {
   .blog-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Contact form: full width on small screens */
 @media (max-width: 480px) {
   .contact-form {
     padding: 0 1rem;
@@ -842,7 +811,6 @@ footer {
   }
 }
 
-/* Prevent horizontal overflow */
 body, html {
   overflow-x: hidden;
 }
@@ -850,43 +818,38 @@ img, video, canvas {
   max-width: 100%;
   height: auto;
 }
-/* ============================================
-   MOBILE MENU (overlay curtain)
-   ============================================ */
 
-/* Hamburger button – hidden on desktop */
+/* Mobile Menu */
 .menu-toggle {
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 44px;             /* minimum iOS tap target */
+    width: 44px;
     height: 44px;
     background: transparent;
     border: none;
     cursor: pointer;
-    z-index: 1002;           /* stay above the overlay */
-    padding: 6px;           /* keeps the bars centered */
+    z-index: 1002;
+    padding: 6px;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     outline: none;
 }
 .menu-toggle .bar {
-    width: 28px;             /* slightly thicker bars */
+    width: 28px;
     height: 3px;
     background-color: var(--text);
     border-radius: 3px;
     transition: 0.3s ease;
-    margin: 3px 0;          /* equal spacing for 3 bars */
+    margin: 3px 0;
 }
-
-/* Overlay (curtain) – hidden by default */
 .menu-overlay {
     position: fixed;
     top: 0; left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(6, 11, 20, 0.95);   /* deep space background, almost opaque */
+    background: rgba(6, 11, 20, 0.95);
     backdrop-filter: blur(12px);
     z-index: 1000;
     display: flex;
@@ -896,14 +859,10 @@ img, video, canvas {
     visibility: hidden;
     transition: opacity 0.4s ease, visibility 0.4s ease;
 }
-
-/* Show overlay when active */
 .menu-overlay.active {
     opacity: 1;
     visibility: visible;
 }
-
-/* Links inside overlay */
 .overlay-content {
     display: flex;
     flex-direction: column;
@@ -921,9 +880,8 @@ img, video, canvas {
     color: var(--accent);
 }
 
-/* Animate hamburger to cross when overlay is open (optional) */
+/* Animate hamburger to cross when overlay is open */
 .menu-toggle.active .bar {
-    /* Reset the original margins so the bars collapse into a single line */
     margin: 0;
 }
 .menu-toggle.active .bar:nth-child(1) {
@@ -937,37 +895,11 @@ img, video, canvas {
     transform: translateY(-10px) rotate(-45deg);
 }
 
-/* Show hamburger only on tablets/phones */
 @media (max-width: 768px) {
     .nav-links {
-        display: none;        /* keep desktop links hidden */
+        display: none;
     }
     .menu-toggle {
-        display: flex;        /* show hamburger */
+        display: flex;
     }
-}
-/* Container takes exactly the visible height minus navbar & footer */
-.booking-container {
-    display: flex;
-    align-items: flex-start;
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 2rem;
-    height: calc(100vh - 160px);   /* adjust 160px based on navbar + footer height */
-}
-
-/* Left panel stays visible and does not scroll */
-.booking-form-panel {
-    flex: 1 1 auto;
-    overflow: visible;           /* no scrollbar */
-    padding: 2rem;
-}
-
-/* Right panel gets its own scrollbar */
-.weather-panel {
-    flex: 0 0 350px;            /* fixed width */
-    max-height: 100%;           /* will scroll if content overflows */
-    overflow-y: auto;
-    padding: 1.5rem;
 }
