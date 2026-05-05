@@ -188,23 +188,44 @@ const leftBtn = document.getElementById('carousel-left');
 const rightBtn = document.getElementById('carousel-right');
     if (!track) return;
 // Build dot navigation
+// Build dot navigation (using centre proximity)
 const dotContainer = document.getElementById('carousel-dots');
 if (dotContainer) {
     const updateDots = () => {
         const cards = track.querySelectorAll('.carousel-card');
-        const activeIndex = Math.round(track.scrollLeft / (track.scrollWidth / cards.length));
+        if (!cards.length) return;
+
+        // Find the card closest to the centre of the visible area
+        const trackCenter = track.scrollLeft + track.clientWidth / 2;
+        let activeIndex = 0;
+        let minDistance = Infinity;
+
+        cards.forEach((card, i) => {
+            const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+            const distance = Math.abs(trackCenter - cardCenter);
+            if (distance < minDistance) {
+                minDistance = distance;
+                activeIndex = i;
+            }
+        });
+
+        // Rebuild dots
         dotContainer.innerHTML = '';
         cards.forEach((_, i) => {
             const dot = document.createElement('span');
             dot.className = `carousel-dot ${i === activeIndex ? 'active' : ''}`;
             dot.addEventListener('click', () => {
-                track.scrollTo({ left: i * cards[0].offsetWidth, behavior: 'smooth' });
+                // Scroll the target card smoothly into view
+                cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             });
             dotContainer.appendChild(dot);
         });
     };
+
     updateDots();
     track.addEventListener('scroll', updateDots);
+    // Recalculate on window resize (in case card sizes change)
+    window.addEventListener('resize', updateDots);
 }
 
     // Helper: get width of one carousel card
