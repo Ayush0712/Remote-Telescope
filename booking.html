@@ -99,7 +99,7 @@
             <div id="api-message" style="margin-top:1rem; text-align:center;"></div>
         </div>
 
-        <!-- Middle Column: Best Targets This Month -->
+        <!-- Middle Column: Best Targets -->
         <div class="targets-panel" id="targets-panel">
             <h2><i class="fas fa-crosshairs"></i> Best Targets <span id="target-month"></span></h2>
             <div class="targets-grid" id="targets-grid">
@@ -110,7 +110,7 @@
             <p class="targets-note">Data: NASA APOD archive</p>
         </div>
 
-        <!-- Right Column: Weather Panel -->
+        <!-- Right Column: Weather -->
         <div class="weather-panel" id="weather-panel">
             <h2><i class="fas fa-cloud-sun"></i> Spiti Weather</h2>
             <div class="weather-grid" id="weather-grid"></div>
@@ -124,42 +124,46 @@
 
     <script src="script.js"></script>
     <script>
-        // ---- Telescope image preview (same as before) ----
+        // ---- equipment image preview ----
         const equipmentImages = {
             'redcat51': 'images/redcat51.jpg',
             'esprit120': 'images/esprit120.jpg',
             'rasa8': 'images/rasa8.jpg',
             'tak-fsq106': 'images/tak-fsq106.jpg'
         };
-        const originalUpdatePrice = updatePrice;
-        updatePrice = function() {
-            originalUpdatePrice();
-            const equipSelect = document.getElementById('equipment-select');
-            const img = document.getElementById('equipment-image');
-            const selectedValue = equipSelect.value;
-            if (equipmentImages[selectedValue]) {
-                img.src = equipmentImages[selectedValue];
-                img.style.display = 'block';
-            } else {
-                img.style.display = 'none';
-            }
-        };
-        window.addEventListener('DOMContentLoaded', () => {
-            if (document.getElementById('equipment-select')) updatePrice();
-        });
+        if (typeof updatePrice === 'function') {
+            const originalUpdatePrice = updatePrice;
+            updatePrice = function() {
+                originalUpdatePrice();
+                const equipSelect = document.getElementById('equipment-select');
+                const img = document.getElementById('equipment-image');
+                if (equipSelect && img) {
+                    const val = equipSelect.value;
+                    if (equipmentImages[val]) {
+                        img.src = equipmentImages[val];
+                        img.style.display = 'block';
+                    } else {
+                        img.style.display = 'none';
+                    }
+                }
+            };
+        }
 
-        // ---- Booking API submission (same as before) ----
+        // ---- Booking API ----
         const BOOKING_API_URL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/book';
+
         function submitBookingAPI() {
             const email = document.getElementById('user-email').value.trim();
             const date = document.getElementById('booking-date').value;
             const startTime = document.getElementById('start-time').value;
             const endTime = document.getElementById('end-time').value;
             const msgDiv = document.getElementById('api-message');
+
             if (!email || !date || !startTime || !endTime) {
                 msgDiv.textContent = '❌ Please fill in all fields.';
                 return;
             }
+
             const start = new Date(`${date}T${startTime}:00`);
             let end = new Date(`${date}T${endTime}:00`);
             if (end <= start) end.setDate(end.getDate() + 1);
@@ -168,39 +172,39 @@
                 msgDiv.textContent = '❌ End time must be after start time.';
                 return;
             }
+
             const equipSelect = document.getElementById('equipment-select');
-            const telescopeValue = equipSelect.value;
+            const telescopeVal = equipSelect.value;
             const telescopeName = equipSelect.options[equipSelect.selectedIndex].text;
             const cameraSelect = document.getElementById('camera-select');
-            const cameraValue = cameraSelect.value;
+            const cameraVal = cameraSelect.value;
             const cameraName = cameraSelect.options[cameraSelect.selectedIndex].text;
-            const filterCheckboxes = document.querySelectorAll('.filter-checkboxes input:checked');
-            const filters = Array.from(filterCheckboxes).map(cb => cb.value.toUpperCase());
+            const filters = Array.from(document.querySelectorAll('.filter-checkboxes input:checked')).map(cb => cb.value.toUpperCase());
             const dithering = document.getElementById('dither').checked;
+
             msgDiv.textContent = '⏳ Processing booking…';
-            const payload = {
-                email, date, start_time: startTime, duration: duration.toString(),
-                telescope: telescopeValue, telescope_name: telescopeName,
-                camera: cameraValue, camera_name: cameraName,
-                filters, dithering
-            };
             fetch(BOOKING_API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    email, date, start_time: startTime, duration: duration.toString(),
+                    telescope: telescopeVal, telescope_name: telescopeName,
+                    camera: cameraVal, camera_name: cameraName,
+                    filters, dithering
+                })
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 if (data.error) msgDiv.textContent = '❌ ' + data.error;
                 else msgDiv.textContent = '✅ Booking confirmed! Check your email for access details.';
             })
-            .catch(error => {
+            .catch(err => {
                 msgDiv.textContent = '❌ Network error. Please try again.';
-                console.error(error);
+                console.error(err);
             });
         }
 
-        // ---- Best Targets loader ----
+        // ---- Best Targets (dynamic from APOD with image proxy) ----
         async function loadTargets() {
             const grid = document.getElementById('targets-grid');
             const monthSpan = document.getElementById('target-month');
@@ -210,44 +214,46 @@
             const monthName = now.toLocaleString('default', { month: 'long' });
             monthSpan.textContent = `for ${monthName}`;
 
+            const proxyBase = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000';
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
-            const startDate = `${year}-${month}-01`;
-            const endDate = `${year}-${month}-30`;<img src="${e.url}" alt="${e.title}" loading="lazy">
-
-            // Call your Flask proxy (see below)
-            const proxyURL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/apod-proxy';
-            // const proxyURL = 'http://localhost:5000/apod-proxy';   // for testing
+            const metaUrl = `${proxyBase}/apod-proxy?start_date=${year}-${month}-01&end_date=${year}-${month}-30`;
 
             try {
-                const resp = await fetch(`${proxyURL}?start_date=${startDate}&end_date=${endDate}`);
+                const resp = await fetch(metaUrl);
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
                 const data = await resp.json();
-                // Pick the top 3-4 entries (you can add more clever filtering later)
                 const entries = (data || []).filter(e => e.media_type === 'image').slice(0, 4);
-                if (entries.length === 0) throw new Error('No images found');
+                if (entries.length === 0) throw new Error('No image entries found');
 
-                grid.innerHTML = entries.map(e => `
-                    <div class="target-card">
-                        const proxiedUrl = `https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/apod-image?url=${encodeURIComponent(e.url)}`;
-<img src="${proxiedUrl}" alt="${e.title}" loading="lazy">
-                        <div class="target-card-body">
-                            <h4>${e.title}</h4>
-                            <p>${e.explanation?.substring(0, 80)}…</p>
+                grid.innerHTML = entries.map(e => {
+                    const imgUrl = `${proxyBase}/apod-image?url=${encodeURIComponent(e.url)}`;
+                    return `
+                        <div class="target-card">
+                            <img src="${imgUrl}" alt="${e.title}" loading="lazy">
+                            <div class="target-card-body">
+                                <h4>${e.title}</h4>
+                                <p>${(e.explanation || '').substring(0, 80)}…</p>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             } catch (err) {
-                console.warn('Targets fetch failed, using static fallback');
-                // Static fallback – you can replace the images with real ones later
+                console.warn('Dynamic targets failed, showing static fallback');
+                // Static fallback – replace with your own images later
                 grid.innerHTML = `
-                    <div class="target-card"><img src="https://apod.nasa.gov/apod/image/2304/M31\_Huang\_960.jpg" alt="M31"><div class="target-card-body"><h4>M31 Andromeda</h4><p>Always a showstopper in April</p></div></div>
-                    <div class="target-card"><img src="https://apod.nasa.gov/apod/image/2304/Orion\_bell\_960.jpg" alt="Orion"><div class="target-card-body"><h4>Orion Nebula</h4><p>Winter classic, still visible early</p></div></div>
-                    <div class="target-card"><img src="https://apod.nasa.gov/apod/image/2304/M51\_HST\_960.jpg" alt="M51"><div class="target-card-body"><h4>Whirlpool Galaxy</h4><p>Perfect for galaxy season</p></div></div>
+                    <div class="target-card"><img src="https://placehold.co/300x200/1a1f35/6C63FF?text=M101" alt="M101"><div class="target-card-body"><h4>M101 Pinwheel</h4><p>Face‑on spiral, galaxy season favourite</p></div></div>
+                    <div class="target-card"><img src="https://placehold.co/300x200/1a1f35/6C63FF?text=Orion" alt="Orion"><div class="target-card-body"><h4>Orion Nebula</h4><p>Winter classic, still stunning</p></div></div>
+                    <div class="target-card"><img src="https://placehold.co/300x200/1a1f35/6C63FF?text=M51" alt="M51"><div class="target-card-body"><h4>Whirlpool Galaxy</h4><p>Interacting pair, great detail</p></div></div>
                 `;
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadTargets);
+        // Start everything once the page is ready
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof updatePrice === 'function') updatePrice();
+            loadTargets();
+        });
     </script>
 </body>
 </html>
