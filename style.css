@@ -408,11 +408,12 @@ body::after {
 /* Booking Page Layout */
 .booking-container {
     display: grid;
-    grid-template-columns: 1fr 350px;
+    grid-template-columns: minmax(0, 700px) 350px;
+    justify-content: center;          /* centres the whole grid when viewport is wider than the columns */
     gap: 2rem;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 2rem auto;
-    padding: 0 2rem;
+    padding: 0 1rem;                  /* less side padding */
 }
 .booking-form-panel {
     background: var(--card-bg);
