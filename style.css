@@ -433,7 +433,11 @@ body::after {
     backdrop-filter: blur(15px);
     border: 1px solid rgba(108, 99, 255, 0.2);
     border-radius: var(--radius);
-    padding: 2rem;
+    padding: 1.2rem;
+    max-height: 500px;                /* limit height */
+    overflow-y: auto;                 /* enables scrollbar */
+    display: flex;
+    flex-direction: column;
 }
 .booking-form-panel h1 {
     font-size: 1.8rem;
@@ -499,25 +503,52 @@ select, input[type="date"], input[type="time"] {
 
 /* Weather Panel */
 .weather-panel h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    padding-bottom: 0.5rem;
+    z-index: 1;
 }
 .weather-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 .weather-card {
     background: rgba(255,255,255,0.03);
-    padding: 0.8rem;
+    padding: 0.6rem 0.8rem;
     border-radius: 8px;
-    text-align: center;
-    border: 1px solid rgba(108, 99, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(108, 99, 255, 0.08);
+    font-size: 0.9rem;
 }
 .weather-card i {
-    font-size: 1.5rem;
-    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+    width: 2rem;
+    text-align: center;
     color: var(--accent);
+}
+.weather-card > div {
+    flex: 1;
+    margin-left: 0.5rem;
+}
+.weather-card .temps {
+    font-weight: 600;
+}
+/* Custom scrollbar (optional) */
+.weather-panel::-webkit-scrollbar {
+    width: 5px;
+}
+.weather-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+.weather-panel::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
 }
 
 /* Gallery Masonry */
