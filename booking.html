@@ -225,7 +225,7 @@
                 const resp = await fetch(metaUrl);
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
                 const data = await resp.json();
-                const entries = (data || []).filter(e => e.media_type === 'image').slice(0, 4);
+                const entries = (data || []).filter(e => e.media_type === 'image').slice(0, 8);
                 if (entries.length === 0) throw new Error('No image entries found');
 
                 grid.innerHTML = entries.map(e => {
