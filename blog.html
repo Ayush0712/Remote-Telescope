@@ -46,9 +46,15 @@
         <p>Latest space news, astrophotography tips, and discoveries.</p>
     </section>
 
+    <!-- TOP PAGINATION -->
+    <nav class="pagination-bar" id="pagination-top" aria-label="Blog pagination top"></nav>
+
     <div class="blog-grid" id="blog-container">
         <!-- Cards injected by JavaScript -->
     </div>
+
+    <!-- BOTTOM PAGINATION -->
+    <nav class="pagination-bar" id="pagination-bottom" aria-label="Blog pagination bottom"></nav>
 
     <footer>
         <p>© 2026 RemoteScope. All rights reserved.</p>
@@ -56,44 +62,124 @@
 
     <script src="script.js"></script>
     <script>
-        // ------- Load latest space news -------
-        async function loadBlogPosts() {
-            const container = document.getElementById('blog-container');
-            if (!container) return;
+        // ---------- SPACE NEWS PAGINATION ----------
+        const ARTICLES_PER_PAGE = 12;
+        const MAX_PAGES = 40;                     // 480 articles max
+        const BASE_URL = 'https://api.spaceflightnewsapi.net/v4/articles/';
+        const blogContainer = document.getElementById('blog-container');
+        const paginationTop = document.getElementById('pagination-top');
+        const paginationBottom = document.getElementById('pagination-bottom');
 
-            const API_URL = 'https://api.spaceflightnewsapi.net/v4/articles/?limit=12';
-            container.innerHTML = '<p>Loading space news…</p>';
+        let currentPage = 1;                      // 1‑based
+
+        // ---------- 1. LOADING SPINNER ----------
+        function showSpinner() {
+            blogContainer.innerHTML = `
+                <div class="spinner-wrapper">
+                    <div class="spinner"></div>
+                    <p>Loading articles…</p>
+                </div>`;
+        }
+
+        // ---------- 2. FETCH A SINGLE PAGE ----------
+        async function fetchPage(page) {
+            showSpinner();
+            const offset = (page - 1) * ARTICLES_PER_PAGE;
+            const url = `${BASE_URL}?limit=${ARTICLES_PER_PAGE}&offset=${offset}`;
 
             try {
-                const resp = await fetch(API_URL);
-                if (!resp.ok) throw new Error('Failed to fetch articles');
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error(`API error ${resp.status}`);
                 const data = await resp.json();
                 const articles = data.results || [];
 
                 if (!articles.length) {
-                    container.innerHTML = '<p>No articles found. Please check back later.</p>';
+                    blogContainer.innerHTML = '<p class="empty-message">No articles found for this page.</p>';
                     return;
                 }
 
-                container.innerHTML = articles.map(article => `
+                // Build cards
+                blogContainer.innerHTML = articles.map(article => `
                     <article class="blog-card">
-                        <img src="${article.image_url}" alt="${article.title}" loading="lazy" onerror="this.src='https://placehold.co/600x300/0b0f19/6C63FF?text=Space+News';">
+                        <img src="${article.image_url}" alt="${article.title}" loading="lazy"
+                             onerror="this.src='https://placehold.co/600x300/0b0f19/6C63FF?text=Space+News';">
                         <div class="blog-card-content">
                             <h3>${article.title}</h3>
-                            <p>${article.summary?.substring(0, 150)}…</p>
+                            <p>${(article.summary || '').substring(0, 150)}…</p>
                             <a href="${article.url}" target="_blank" rel="noopener" class="btn-secondary">Read More</a>
                         </div>
                     </article>
                 `).join('');
 
             } catch (err) {
-                console.error('Blog load failed:', err);
-                container.innerHTML = '<p>Could not load space news. Please try again later.</p>';
+                console.error('Blog fetch error:', err);
+                blogContainer.innerHTML = '<p class="empty-message">Could not load articles. Please try again later.</p>';
             }
         }
 
-        // Load on page ready
-        window.addEventListener('DOMContentLoaded', loadBlogPosts);
+        // ---------- 3. BUILD PAGINATION BUTTONS ----------
+        function renderPagination() {
+            const pagesHTML = buildPaginationHTML();
+            paginationTop.innerHTML = pagesHTML;
+            paginationBottom.innerHTML = pagesHTML;
+
+            // Attach click listeners to all page buttons (both bars)
+            document.querySelectorAll('.pagination-bar').forEach(bar => {
+                bar.querySelectorAll('.page-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const page = parseInt(this.dataset.page, 10);
+                        if (page === currentPage) return;
+                        currentPage = page;
+                        fetchPage(currentPage);
+                        renderPagination();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                });
+            });
+        }
+
+        function buildPaginationHTML() {
+            let html = '';
+            const maxVisible = 7;   // visible page numbers (not counting prev/next)
+
+            // Previous button
+            html += `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''} aria-label="Previous page">‹ Prev</button>`;
+
+            // Calculate range of visible pages
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = startPage + maxVisible - 1;
+            if (endPage > MAX_PAGES) {
+                endPage = MAX_PAGES;
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+
+            // First page + ellipsis
+            if (startPage > 1) {
+                html += `<button class="page-btn" data-page="1">1</button>`;
+                if (startPage > 2) html += `<span class="page-ellipsis">…</span>`;
+            }
+
+            // Page numbers
+            for (let p = startPage; p <= endPage; p++) {
+                html += `<button class="page-btn${p === currentPage ? ' active' : ''}" data-page="${p}">${p}</button>`;
+            }
+
+            // Last page + ellipsis
+            if (endPage < MAX_PAGES) {
+                if (endPage < MAX_PAGES - 1) html += `<span class="page-ellipsis">…</span>`;
+                html += `<button class="page-btn" data-page="${MAX_PAGES}">${MAX_PAGES}</button>`;
+            }
+
+            // Next button
+            html += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === MAX_PAGES ? 'disabled' : ''} aria-label="Next page">Next ›</button>`;
+
+            return html;
+        }
+
+        // ---------- 4. INIT ----------
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchPage(currentPage).then(() => renderPagination());
+        });
     </script>
 </body>
 </html>
