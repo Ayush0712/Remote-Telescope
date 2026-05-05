@@ -1,0 +1,42 @@
+[
+  {
+    "name": "M101 – Pinwheel Galaxy",
+    "image": "images/targets/m101.jpg",
+    "description": "A grand‑design spiral galaxy that shines at magnitude 7.9. Well‑placed high in the northern sky all night. Perfect for broadband RGB imaging."
+  },
+  {
+    "name": "M51 – Whirlpool Galaxy",
+    "image": "images/targets/m51.jpg",
+    "description": "An iconic interacting pair in Canes Venatici. The spiral structure is striking, and the bridge of stars between the two galaxies is a must‑capture."
+  },
+  {
+    "name": "M13 – Great Hercules Cluster",
+    "image": "images/targets/m13.jpg",
+    "description": "The brightest globular cluster in the north. Rising to a comfortable altitude by midnight, it will be a sparkling ball of stars through any telescope."
+  },
+  {
+    "name": "IC 1396 – Elephant’s Trunk Nebula",
+    "image": "images/targets/elephant_trunk.jpg",
+    "description": "A vast emission nebula in Cepheus, loaded with dark lanes and bright rims. Narrowband filters (Ha, OIII) really make it pop."
+  },
+  {
+    "name": "NGC 6960 – Western Veil Nebula",
+    "image": "images/targets/veil_west.jpg",
+    "description": "A delicate supernova remnant that’s well‑placed for late‑night imaging. Its wispy filaments are a joy to capture with an OIII filter."
+  },
+  {
+    "name": "M57 – Ring Nebula",
+    "image": "images/targets/ring.jpg",
+    "description": "A small but brilliant planetary nebula in Lyra. High in the sky, it’s an easy target that shows its central star with enough exposure."
+  },
+  {
+    "name": "M27 – Dumbbell Nebula",
+    "image": "images/targets/dumbbell.jpg",
+    "description": "Another bright planetary nebula, this time in Vulpecula. Its apple‑core shape is easily visible, and it takes colour beautifully."
+  },
+  {
+    "name": "NGC 7000 – North America Nebula",
+    "image": "images/targets/north_america.jpg",
+    "description": "A huge emission region in Cygnus that’s best framed with a wide‑field telescope. Narrowband filters reveal incredible detail."
+  }
+]
