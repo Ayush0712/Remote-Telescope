@@ -131,10 +131,9 @@
             const selectedValue = equipSelect.value;
             if (equipmentImages[selectedValue]) {
                 img.src = equipmentImages[selectedValue];
-                img.onerror = () => {
-    // If image fails, show a placeholder icon instead
+img.onerror = () => {
     img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150" viewBox="0 0 200 150"><rect width="200" height="150" fill="%23111"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-size="18" font-family="Arial">Telescope</text></svg>';
-    img.onerror = null; // prevent infinite loop
+    img.onerror = null;
 };
                 img.style.display = 'block';
             } else {
