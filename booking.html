@@ -217,7 +217,9 @@
             const proxyBase = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000';
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
-            const metaUrl = `${proxyBase}/apod-proxy?start_date=${year}-${month}-01&end_date=${year}-${month}-30`;
+            // Use today as the end date to avoid future dates
+            const todayStr = now.toISOString().split('T')[0];
+            const metaUrl = `${proxyBase}/apod-proxy?start_date=${year}-${month}-01&end_date=${todayStr}`;
 
             try {
                 const resp = await fetch(metaUrl);
