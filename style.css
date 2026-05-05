@@ -7,6 +7,13 @@
     --accent-glow: rgba(108, 99, 255, 0.4);
     --radius: 12px;
     --transition: 0.3s ease;
+    --font-hero: clamp(2rem, 9.5vw, 3.5rem);
+    --font-section-title: clamp(1.5rem, 5vw, 2.4rem);
+    --font-h1: clamp(1.6rem, 5.5vw, 2.2rem);
+    --font-h2: clamp(1.3rem, 4vw, 1.8rem);
+    --font-body: clamp(0.95rem, 2.5vw, 1.1rem);
+    --font-small: clamp(0.75rem, 1.5vw, 0.9rem);
+    --font-card-title: clamp(0.9rem, 2vw, 1.1rem);
 }
 
 * {
@@ -821,6 +828,32 @@ footer {
 body, html {
   overflow-x: hidden;
 }
+html {
+    font-size: 16px;          /* critical base – prevents iOS zoom on inputs[reference:1] */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    font-size: var(--font-body);
+    line-height: 1.6;
+}
+
+p, li, label, input, select, textarea {
+    font-size: var(--font-body);
+}
+
+
+h1, .section-title {
+    font-size: var(--font-section-title);
+}
+.hero-content h1 {
+    font-size: var(--font-hero);
+}
+h2 { font-size: var(--font-h2); }
+h3 { font-size: var(--font-h1); }
+.booking-form-panel h1 { font-size: var(--font-h1); }
+
 img, video, canvas {
   max-width: 100%;
   height: auto;
@@ -1094,7 +1127,24 @@ img, video, canvas {
 .carousel-arrow.right {
     margin-left: 1rem;
 }
+/* Fluid spacing */
+section, .section, .features-section, .equipment-section,
+.image-grid-section, .testimonials-section, .targets-carousel-section {
+    margin-top: clamp(2rem, 6vw, 5rem);
+    margin-bottom: clamp(2rem, 6vw, 5rem);
+    padding-left: clamp(0.8rem, 3vw, 2rem);
+    padding-right: clamp(0.8rem, 3vw, 2rem);
+}
 
+.booking-outer {
+    padding-left: clamp(0.6rem, 2vw, 1.5rem);
+    padding-right: clamp(0.6rem, 2vw, 1.5rem);
+}
+
+/* Cards scale gracefully */
+.carousel-card, .flip-card, .feature-card, .testimonial-card, .equipment-card {
+    min-height: clamp(180px, 50vw, 280px);
+}
 /* Mobile: 1 full card, perfectly snapped */
 @media (max-width: 768px) {
     .carousel-track {
@@ -1109,4 +1159,40 @@ img, video, canvas {
     .carousel-card img {
         height: 220px;              /* slightly taller for mobile screens */
     }
+}
+
+/* Accessible touch targets */
+.btn-primary,
+.menu-toggle,
+.carousel-arrow,
+.nav-links a,
+.overlay-link,
+.flip-card,
+button,
+input[type="checkbox"],
+input[type="radio"],
+select,
+.checkbox-option label {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Spacing between interactive elements */
+.filter-checkboxes label {
+    margin-bottom: 0.7rem;
+    padding: 0.3rem 0;
+}
+
+.checkbox-option {
+    padding: 0.4rem 0;
+}
+
+/* Prevent accidental taps on adjacent links */
+.nav-links a {
+    padding: 0.6rem 0.4rem;
+}
+
+/* Prevent iOS zoom on input focus */
+input, select, textarea {
+    font-size: 16px !important;   /* must be ≥ 16px[reference:7] */
 }
