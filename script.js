@@ -391,12 +391,6 @@ menuOverlay.addEventListener('click', (e) => {
         menuToggle.classList.remove('active');
     }
 });
-.overlay-link {
-    font-size: clamp(1.5rem, 6vw, 2rem);
-    padding: 0.8rem 0;
-    display: block;
-    min-height: 48px;
-}
 // =============================================
 // 8. DYNAMIC EQUIPMENT FLIP CARDS
 // =============================================
