@@ -1273,7 +1273,27 @@ input, select, textarea {
         will-change: transform;
     }
 }
+/* Smaller, cleaner checkboxes */
+.filter-checkboxes input[type="checkbox"],
+.checkbox-option input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    accent-color: var(--accent);   /* modern browsers – makes the checkmark purple */
+    cursor: pointer;
+    margin: 0 0.3rem 0 0;
+    vertical-align: middle;
+}
 
+/* Adjust the label text size next to the checkbox */
+.filter-checkboxes label,
+.checkbox-option {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
 .carousel-dots {
     display: flex;
     justify-content: center;
