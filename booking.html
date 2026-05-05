@@ -151,6 +151,35 @@ async function loadEquipmentOptions() {
                 ${eq.name} – ${eq.price}
             </option>
         `).join('');
+        // Store equipment data for image mapping
+window.__equipmentData = items;
+
+// Set image when user selects a telescope
+select.addEventListener('change', function() {
+    const selectedValue = this.value;
+    const img = document.getElementById('equipment-image');
+    if (!img || !window.__equipmentData) return;
+
+    const eq = window.__equipmentData.find(e => e.equipParam === selectedValue);
+    if (eq && eq.imageBase) {
+        // Use the same image path as the homepage
+        const basePath = `images/${eq.imageBase}`;
+        // Use the fallback function from script.js (available globally)
+        if (typeof applyImageFallback === 'function') {
+            applyImageFallback(img, basePath);
+            img.style.display = 'block';
+        } else {
+            // Simple fallback if the function isn't available
+            img.src = basePath + '.jpg';
+            img.style.display = 'block';
+        }
+    } else {
+        img.style.display = 'none';
+    }
+});
+
+// Trigger a change event to load the initial image
+select.dispatchEvent(new Event('change'));
 
         // After options are loaded, call updatePrice to set initial values
         if (typeof updatePrice === 'function') updatePrice();
