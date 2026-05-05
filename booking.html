@@ -26,10 +26,14 @@
     </nav>
 
     <div class="booking-container">
-        <!-- Left Column: Booking Form -->
         <div class="booking-form-panel">
             <h1>Configure Your Session</h1>
             
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Your Email</label>
+                <input type="email" id="user-email" placeholder="you@example.com" required>
+            </div>
+
             <div class="form-group">
                 <label><i class="fas fa-telescope"></i> Telescope Package</label>
                 <select id="equipment-select" onchange="updatePrice()">
@@ -89,7 +93,8 @@
                 <a href="#" id="upi-link" class="btn-primary">Pay via UPI</a>
             </div>
 
-            <button class="btn-primary full-width" onclick="submitBooking()">Confirm Booking</button>
+            <button class="btn-primary full-width" onclick="submitBookingAPI()">Confirm Booking</button>
+            <div id="api-message" style="margin-top:1rem; text-align:center;"></div>
         </div>
 
         <!-- Right Column: Weather Panel -->
@@ -105,5 +110,61 @@
     </footer>
 
     <script src="script.js"></script>
+    <!-- New inline script for API submission -->
+    <script>
+        // ========== Real-time Booking API Submission ==========
+        // IMPORTANT: Replace this URL with your actual Tailscale Funnel endpoint
+        const BOOKING_API_URL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000';
+
+        function submitBookingAPI() {
+            const email = document.getElementById('user-email').value.trim();
+            const date = document.getElementById('booking-date').value;
+            const startTime = document.getElementById('start-time').value;
+            const endTime = document.getElementById('end-time').value;
+            const msgDiv = document.getElementById('api-message');
+
+            if (!email || !date || !startTime || !endTime) {
+                msgDiv.textContent = '❌ Please fill in all fields.';
+                return;
+            }
+
+            // Calculate duration in hours
+            const start = new Date(`${date}T${startTime}:00`);
+            let end = new Date(`${date}T${endTime}:00`);
+            if (end <= start) end.setDate(end.getDate() + 1); // overnight
+            const duration = (end - start) / (1000 * 60 * 60);
+            if (duration <= 0) {
+                msgDiv.textContent = '❌ End time must be after start time.';
+                return;
+            }
+
+            msgDiv.textContent = '⏳ Processing booking…';
+
+            const payload = {
+                email: email,
+                date: date,
+                start_time: startTime,
+                duration: duration.toString()
+            };
+
+            fetch(BOOKING_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    msgDiv.textContent = '❌ ' + data.error;
+                } else {
+                    msgDiv.textContent = '✅ Booking confirmed! Check your email for access details.';
+                }
+            })
+            .catch(error => {
+                msgDiv.textContent = '❌ Network error. Please try again.';
+                console.error(error);
+            });
+        }
+    </script>
 </body>
 </html>
