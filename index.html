@@ -130,142 +130,135 @@
     <footer>
         <p>© 2026 RemoteScope. All rights reserved.</p>
     </footer>
-
     <script src="script.js"></script>
     <script>
-    // ---- Best Targets Carousel Loader ----
-// ---- Monthly Targets Carousel (static JSON) ----
-async function loadCarouselTargets() {
-    const track = document.getElementById('carousel-track');
-    const monthSpan = document.getElementById('carousel-month');
-    if (!track || !monthSpan) return;
+        // ------- Carousel functions -------
+        async function loadCarouselTargets() {
+            const track = document.getElementById('carousel-track');
+            const monthSpan = document.getElementById('carousel-month');
+            if (!track || !monthSpan) return;
 
-    const now = new Date();
-    const monthName = now.toLocaleString('default', { month: 'long' });
-    monthSpan.textContent = `${monthName} ${now.getFullYear()}`;
+            const now = new Date();
+            const monthName = now.toLocaleString('default', { month: 'long' });
+            monthSpan.textContent = `${monthName} ${now.getFullYear()}`;
 
-    try {
-        // Load the static JSON file
-        const response = await fetch('monthly-targets.json');
-        if (!response.ok) throw new Error('JSON not found');
-        const targets = await response.json();
+            try {
+                const response = await fetch('monthly-targets.json');
+                if (!response.ok) throw new Error('JSON not found');
+                const targets = await response.json();
+                if (!targets.length) throw new Error('No targets');
 
-        if (!targets.length) throw new Error('No targets');
+                // Build cards
+                track.innerHTML = targets.map(t => `
+                    <div class="carousel-card">
+                        <img src="${t.image}" alt="${t.name}" loading="lazy">
+                        <div class="carousel-card-body">
+                            <h4>${t.name}</h4>
+                            <p>${t.description}</p>
+                        </div>
+                    </div>
+                `).join('');
 
-        track.innerHTML = targets.map(t => `
-            <div class="carousel-card">
-                <img src="${t.image}" alt="${t.name}" loading="lazy">
-                <div class="carousel-card-body">
-                    <h4>${t.name}</h4>
-                    <p>${t.description}</p>
-                </div>
-            </div>
-        `).join('');
-        // Reset to first card and build dots
-track.scrollLeft = 0;
-updateCarouselDots();
-    } catch (err) {
-        console.warn('Monthly targets failed, showing fallback');
-        // Simple fallback with a few hard‑coded targets (optional)
-        track.innerHTML = [
-            { name: 'M31 Andromeda', img: 'images/targets/m31.jpg', desc: 'Always breathtaking.' },
-            { name: 'Orion Nebula', img: 'images/targets/orion.jpg', desc: 'A winter classic.' }
-        ].map(t => `
-            <div class="carousel-card">
-                <img src="${t.img}" alt="${t.name}">
-                <div class="carousel-card-body">
-                    <h4>${t.name}</h4>
-                    <p>${t.desc}</p>
-                </div>
-            </div>
-        `).join('');
-    }
-}
-
-    // Arrow button handlers
-    document.addEventListener('DOMContentLoaded', () => {
-        loadCarouselTargets();
-
-const track = document.getElementById('carousel-track');
-const leftBtn = document.getElementById('carousel-left');
-const rightBtn = document.getElementById('carousel-right');
-    if (!track) return;
-// Build dot navigation
-// Build dot navigation (using centre proximity)
-function updateCarouselDots() {
-    const dotContainer = document.getElementById('carousel-dots');
-    if (!dotContainer) return;
-
-    const track = document.getElementById('carousel-track');
-    if (!track) return;
-
-    const cards = track.querySelectorAll('.carousel-card');
-    if (!cards.length) return;
-
-    const trackCenter = track.scrollLeft + track.clientWidth / 2;
-    let activeIndex = 0;
-    let minDistance = Infinity;
-
-    cards.forEach((card, i) => {
-        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const distance = Math.abs(trackCenter - cardCenter);
-        if (distance < minDistance) {
-            minDistance = distance;
-            activeIndex = i;
+                // Reset scroll & build dots
+                track.scrollLeft = 0;
+                if (typeof updateCarouselDots === 'function') updateCarouselDots();
+            } catch (err) {
+                console.warn('Monthly targets failed, showing fallback');
+                track.innerHTML = [
+                    { name: 'M31 Andromeda', img: 'images/targets/m31.jpg', desc: 'Always breathtaking.' },
+                    { name: 'Orion Nebula', img: 'images/targets/orion.jpg', desc: 'A winter classic.' }
+                ].map(t => `
+                    <div class="carousel-card">
+                        <img src="${t.img}" alt="${t.name}">
+                        <div class="carousel-card-body">
+                            <h4>${t.name}</h4>
+                            <p>${t.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+                // Build dots for fallback too
+                if (typeof updateCarouselDots === 'function') updateCarouselDots();
+            }
         }
-    });
 
-    dotContainer.innerHTML = '';
-    cards.forEach((_, i) => {
-        const dot = document.createElement('span');
-        dot.className = `carousel-dot ${i === activeIndex ? 'active' : ''}`;
-        dot.addEventListener('click', () => {
-            cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        function updateCarouselDots() {
+            const dotContainer = document.getElementById('carousel-dots');
+            const track = document.getElementById('carousel-track');
+            if (!dotContainer || !track) return;
+
+            const cards = track.querySelectorAll('.carousel-card');
+            if (!cards.length) return;
+
+            const trackCenter = track.scrollLeft + track.clientWidth / 2;
+            let activeIndex = 0;
+            let minDistance = Infinity;
+
+            cards.forEach((card, i) => {
+                const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+                const distance = Math.abs(trackCenter - cardCenter);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    activeIndex = i;
+                }
+            });
+
+            dotContainer.innerHTML = '';
+            cards.forEach((_, i) => {
+                const dot = document.createElement('span');
+                dot.className = `carousel-dot ${i === activeIndex ? 'active' : ''}`;
+                dot.addEventListener('click', () => {
+                    cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                });
+                dotContainer.appendChild(dot);
+            });
+        }
+
+        // ------- Main initialisation -------
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load targets
+            loadCarouselTargets();
+
+            const track = document.getElementById('carousel-track');
+            const leftBtn = document.getElementById('carousel-left');
+            const rightBtn = document.getElementById('carousel-right');
+            if (!track) return;
+
+            // Attach scroll event to update dots
+            track.addEventListener('scroll', updateCarouselDots);
+
+            // Helper for arrow width
+            function getCardWidth() {
+                const firstCard = track.querySelector('.carousel-card');
+                return firstCard ? firstCard.offsetWidth : 300;
+            }
+
+            // Left arrow (loops to end)
+            leftBtn?.addEventListener('click', () => {
+                const cardWidth = getCardWidth();
+                if (track.scrollLeft <= 1) {
+                    track.scrollTo({ left: track.scrollWidth - track.clientWidth, behavior: 'smooth' });
+                } else {
+                    track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                }
+            });
+
+            // Right arrow (loops to start)
+            rightBtn?.addEventListener('click', () => {
+                const cardWidth = getCardWidth();
+                const maxScroll = track.scrollWidth - track.clientWidth;
+                if (track.scrollLeft >= maxScroll - 1) {
+                    track.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                }
+            });
+
+            // First dot build
+            updateCarouselDots();
         });
-        dotContainer.appendChild(dot);
-    });
-}
-
-// Attach scroll event (only once)
-document.addEventListener('DOMContentLoaded', () => {
-    const track = document.getElementById('carousel-track');
-    if (track) {
-        track.addEventListener('scroll', updateCarouselDots);
-    }
-});
-
-    // Helper: get width of one carousel card
-    function getCardWidth() {
-        const firstCard = track.querySelector('.carousel-card');
-        return firstCard ? firstCard.offsetWidth : 300;
-    }
-
-    // Scroll left (with loop)
-    leftBtn?.addEventListener('click', () => {
-        const cardWidth = getCardWidth();
-        // If at the very start, jump to the end
-        if (track.scrollLeft <= 1) {
-            track.scrollTo({ left: track.scrollWidth - track.clientWidth, behavior: 'smooth' });
-        } else {
-            track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-        }
-    });
-
-    // Scroll right (with loop)
-    rightBtn?.addEventListener('click', () => {
-        const cardWidth = getCardWidth();
-        const maxScroll = track.scrollWidth - track.clientWidth;
-        // If at the very end, jump to the start
-        if (track.scrollLeft >= maxScroll - 1) {
-            track.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-            track.scrollBy({ left: cardWidth, behavior: 'smooth' });
-        }
-    });
-    });
-</script>
-   <script>
-        // Highlight nav link when scrolling
+    </script>
+    <script>
+        // Navigation highlight (unchanged)
         window.addEventListener('scroll', () => {
             const sections = document.querySelectorAll('section[id]');
             const scrollY = window.pageYOffset + 70;
@@ -283,8 +276,3 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     </script>
-</body>
-</html>
-
-</body>
-</html>
