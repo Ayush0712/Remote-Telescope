@@ -1242,3 +1242,23 @@ input, select, textarea {
         will-change: transform;
     }
 }
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+}
+.carousel-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    opacity: 0.4;
+    transition: opacity 0.3s, transform 0.3s;
+}
+.carousel-dot.active {
+    opacity: 1;
+    background: var(--accent);
+    transform: scale(1.2);
+}
