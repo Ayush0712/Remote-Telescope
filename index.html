@@ -187,6 +187,25 @@ const track = document.getElementById('carousel-track');
 const leftBtn = document.getElementById('carousel-left');
 const rightBtn = document.getElementById('carousel-right');
     if (!track) return;
+// Build dot navigation
+const dotContainer = document.getElementById('carousel-dots');
+if (dotContainer) {
+    const updateDots = () => {
+        const cards = track.querySelectorAll('.carousel-card');
+        const activeIndex = Math.round(track.scrollLeft / (track.scrollWidth / cards.length));
+        dotContainer.innerHTML = '';
+        cards.forEach((_, i) => {
+            const dot = document.createElement('span');
+            dot.className = `carousel-dot ${i === activeIndex ? 'active' : ''}`;
+            dot.addEventListener('click', () => {
+                track.scrollTo({ left: i * cards[0].offsetWidth, behavior: 'smooth' });
+            });
+            dotContainer.appendChild(dot);
+        });
+    };
+    updateDots();
+    track.addEventListener('scroll', updateDots);
+}
 
     // Helper: get width of one carousel card
     function getCardWidth() {
