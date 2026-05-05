@@ -1130,6 +1130,9 @@ img, video, canvas {
     transition: background 0.3s, transform 0.2s;
     z-index: 2;
     flex-shrink: 0;
+    touch-action: manipulation;    /* prevents double‑tap zoom on iOS */
+    user-select: none;             /* prevents text selection (which can also cause a zoom flash) */
+    -webkit-user-select: none;     /* Safari‑specific */
 }
 .carousel-arrow:hover {
     background: var(--accent);
