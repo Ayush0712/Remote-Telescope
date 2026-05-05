@@ -53,10 +53,6 @@
             <div class="form-group">
                 <label><i class="fas fa-telescope"></i> Telescope Package</label>
                 <select id="equipment-select" onchange="updatePrice()">
-                    <option value="redcat51" data-price="500">RedCat 51 – ₹500/hr</option>
-                    <option value="esprit120" data-price="600">Esprit 120 – ₹600/hr</option>
-                    <option value="rasa8" data-price="800">RASA 8 – ₹800/hr</option>
-                    <option value="tak-fsq106" data-price="1000">Takahashi FSQ-106 – ₹1000/hr</option>
                 </select>
                 <img id="equipment-image" src="" alt="Telescope" style="display:none; width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-top:1rem;">
             </div>
@@ -139,6 +135,33 @@
 
     <script src="script.js"></script>
     <script>
+        // Load equipment from the shared JSON and populate the dropdown
+async function loadEquipmentOptions() {
+    const select = document.getElementById('equipment-select');
+    if (!select) return;
+
+    try {
+        const resp = await fetch('equipment.json');
+        if (!resp.ok) throw new Error('Failed to load equipment');
+        const items = await resp.json();
+
+        // Build options from JSON
+        select.innerHTML = items.map(eq => `
+            <option value="${eq.equipParam}" data-price="${eq.price.replace('₹', '').replace('/hr', '').trim()}">
+                ${eq.name} – ${eq.price}
+            </option>
+        `).join('');
+
+        // After options are loaded, call updatePrice to set initial values
+        if (typeof updatePrice === 'function') updatePrice();
+    } catch (err) {
+        console.error('Could not load equipment options:', err);
+        // Fallback: keep the existing hard‑coded options (optional)
+    }
+}
+
+// Call it on page load
+window.addEventListener('DOMContentLoaded', loadEquipmentOptions);
         // ---- equipment image preview ----
         const equipmentImages = {
             'redcat51': 'images/redcat51.jpg',
