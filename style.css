@@ -1095,10 +1095,11 @@ img, video, canvas {
     display: flex;
     gap: 1.5rem;
     overflow-x: auto;
+    overflow-y: visible;            /* allow vertical overflow to pass through */
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
-    touch-action: pan-y pinch-zoom; 
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-y pinch-zoom; /* prioritize vertical scrolling */
     padding: 0.5rem 0;
     flex: 1;
 }
