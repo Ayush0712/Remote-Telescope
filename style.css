@@ -641,6 +641,10 @@ select, input[type="date"], input[type="time"], input[type="email"] {
 .blog-card-content {
     padding: 1.5rem;
 }
+select option {
+    background: #0a0f1a;   /* solid dark background for the dropdown list */
+    color: #e4e8f0;        /* light text, same as your body text */
+}
 
 /* Contact */
 .contact-form {
