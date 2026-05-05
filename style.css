@@ -1322,3 +1322,8 @@ input, select, textarea {
     background: var(--card-bg);  /* placeholder color while loading */
     display: none;               /* initially hidden – shown by JS when a scope is selected */
 }
+@media (max-width: 768px) {
+    .equipment-image-wrapper {
+        aspect-ratio: 4 / 3;
+    }
+}
