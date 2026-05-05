@@ -137,46 +137,6 @@
     <script src="script.js"></script>
     <script>
         // ------- Load equipment from shared JSON & populate dropdown -------
-        async function loadEquipmentOptions() {
-            const select = document.getElementById('equipment-select');
-            if (!select) return;
-
-            try {
-                const resp = await fetch('equipment.json');
-                if (!resp.ok) throw new Error('Failed to load equipment');
-                const items = await resp.json();
-
-                // Store globally so other functions can use it
-                window.__equipmentData = items;
-
-                // Build <option> elements
-                select.innerHTML = items.map(eq => `
-                    <option value="${eq.equipParam}" data-price="${eq.price.replace('₹', '').replace('/hr', '').trim()}">
-                        ${eq.name} – ${eq.price}
-                    </option>
-                `).join('');
-
-                // Pre‑select from URL (?equip=...) if present
-                const urlParams = new URLSearchParams(window.location.search);
-                const equipParam = urlParams.get('equip');
-                if (equipParam) {
-                    const option = select.querySelector(`option[value="${equipParam}"]`);
-                    if (option) option.selected = true;
-                }
-
-                // Show the correct image for the currently selected telescope
-                updateEquipmentImage();
-
-                // Attach change listener for future selections
-                select.addEventListener('change', updateEquipmentImage);
-
-                // Call updatePrice to refresh the total (now that options exist)
-                if (typeof updatePrice === 'function') updatePrice();
-            } catch (err) {
-                console.error('Could not load equipment options:', err);
-            }
-        }
-
         // ------- Update the telescope preview image from JSON data -------
         function updateEquipmentImage() {
             const select = document.getElementById('equipment-select');
@@ -199,6 +159,52 @@
                 img.style.display = 'none';
             }
         }
+async function loadEquipmentOptions() {
+    const select = document.getElementById('equipment-select');
+    if (!select) return;
+
+    try {
+        const resp = await fetch('equipment.json');
+        if (!resp.ok) throw new Error('Failed to load equipment');
+        const items = await resp.json();
+
+        // Store globally
+        window.__equipmentData = items;
+
+        // Build <option> elements
+        select.innerHTML = items.map(eq => `
+            <option value="${eq.equipParam}" data-price="${eq.price.replace('₹', '').replace('/hr', '').trim()}">
+                ${eq.name} – ${eq.price}
+            </option>
+        `).join('');
+
+        // Check for ?equip= in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const equipParam = urlParams.get('equip');
+
+        // If no equipment specified in URL, default to the first one (e.g., RedCat51)
+        if (!equipParam) {
+            select.selectedIndex = 0;   // default to first option
+        } else {
+            const option = select.querySelector(`option[value="${equipParam}"]`);
+            if (option) option.selected = true;
+        }
+
+        // Now update the image wrapper and price
+        updateEquipmentImage();
+        if (typeof updatePrice === 'function') updatePrice();
+
+        // Attach change listener for future selections
+        select.addEventListener('change', function() {
+            updateEquipmentImage();
+            if (typeof updatePrice === 'function') updatePrice();
+        });
+
+    } catch (err) {
+        console.error('Could not load equipment options:', err);
+    }
+}
+
 
         // Override the original updatePrice to also call the image updater
         if (typeof updatePrice === 'function') {
