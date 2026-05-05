@@ -910,3 +910,94 @@ img, video, canvas {
         display: flex;
     }
 }
+
+/* ---- Three‑column booking layout ---- */
+.booking-outer {
+    display: grid;
+    grid-template-columns: 45fr 25fr 15fr;   /* 45% - 25% - 15% */
+    gap: 1.5rem;
+    max-width: 1600px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    align-items: start;
+}
+
+/* Existing panels get no extra width – they fill their column */
+.booking-form-panel,
+.targets-panel,
+.weather-panel {
+    width: 100%;
+}
+
+/* ---- Targets panel ---- */
+.targets-panel {
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+.targets-panel h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    padding-bottom: 0.5rem;
+    z-index: 1;
+}
+.targets-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.target-card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(108, 99, 255, 0.08);
+}
+.target-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+}
+.target-card-body {
+    padding: 0.8rem 1rem;
+}
+.target-card-body h4 {
+    margin: 0 0 0.3rem;
+    font-size: 1rem;
+}
+.target-card-body p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+.skeleton {
+    animation: pulse 1.5s infinite;
+    background: rgba(255,255,255,0.05);
+    height: 100px;
+    color: transparent;
+}
+@keyframes pulse {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.3; }
+}
+
+/* Responsive: stack everything on mobile */
+@media (max-width: 768px) {
+    .booking-outer {
+        grid-template-columns: 1fr;
+    }
+    .targets-panel,
+    .weather-panel {
+        max-height: none;
+    }
+}
