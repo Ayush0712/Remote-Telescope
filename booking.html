@@ -213,7 +213,7 @@
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const startDate = `${year}-${month}-01`;
-            const endDate = `${year}-${month}-30`;
+            const endDate = `${year}-${month}-30`;<img src="${e.url}" alt="${e.title}" loading="lazy">
 
             // Call your Flask proxy (see below)
             const proxyURL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/apod-proxy';
@@ -228,7 +228,8 @@
 
                 grid.innerHTML = entries.map(e => `
                     <div class="target-card">
-                        <img src="${e.url}" alt="${e.title}" loading="lazy">
+                        const proxiedUrl = `https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/apod-image?url=${encodeURIComponent(e.url)}`;
+<img src="${proxiedUrl}" alt="${e.title}" loading="lazy">
                         <div class="target-card-body">
                             <h4>${e.title}</h4>
                             <p>${e.explanation?.substring(0, 80)}…</p>
