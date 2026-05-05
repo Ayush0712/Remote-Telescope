@@ -4,17 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About | RemoteScope</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <canvas id="starfield-canvas"></canvas>
-  <nav id="navbar">
+  <canvas id="stars-canvas"></canvas>
+  <nav class="navbar">
     <div class="nav-container">
-      <a href="index.html" class="logo">🌌 RemoteScope</a>
+      <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
+        <li><a href="booking.html">Book Now</a></li>
         <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="pricing.html">Book a Slot</a></li>
         <li><a href="about.html" class="active">About</a></li>
         <li><a href="blog.html">Blog</a></li>
         <li><a href="contact.html">Contact</a></li>
@@ -24,44 +26,99 @@
 
   <section class="page-hero">
     <h1>Our Story</h1>
-    <p>Born from a passion to share the darkest skies with the world.</p>
+    <p>Why we built a remote observatory 4,000 metres above sea level – and why you’re the reason it exists.</p>
   </section>
 
   <div class="about-section reveal">
     <div class="founder-img">
-      <img src="https://placehold.co/600x400/0b0f19/6C63FF?text=Your+Photo" alt="Founder">
+      <!-- Replace with your actual photo: <img src="images/your-photo.jpg" alt="Founder"> -->
+      <img src="https://placehold.co/600x400/0b0f19/6C63FF?text=Your+Photo+Here" alt="Founder">
     </div>
     <div class="founder-text">
-      <h2>From Backyard to Remote Observatory</h2>
-      <p>It started with a small refractor under city lights. I knew that to truly capture the cosmos, I had to escape the light pollution. After months of planning and building, our Bortle 1 observatory was born – now open to you.</p>
-      <p>We believe astrophotography should be accessible to everyone, no matter where you live.</p>
+      <h2>From a Polluted Sky to a Window on the Universe</h2>
+      <p>I still remember the first time I pointed my tiny refractor at the Orion Nebula from my rooftop in the city. I saw a faint, grey smudge – nothing like the vivid photographs I’d admired online. The culprit? Light pollution. That was the moment I realised that if you can’t escape the city, the universe stays hidden.</p>
+      <p>So I did something about it. I travelled to Spiti Valley, a cold desert in the Himalayas where the sky is classified <strong>Bortle 1</strong> – the darkest on the planet. There, I set up a fully automated observatory with professional-grade equipment. But this isn’t just my private playground. I opened it to the world.</p>
     </div>
   </div>
 
+  <section class="features-section reveal">
+    <h2 class="section-title">Why RemoteScope Exists</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <i class="fas fa-globe-asia"></i>
+        <h3>Democratising Deep‑Sky</h3>
+        <p>Not everyone can drive 12 hours into the mountains or spend ₹3 lakhs on a Takahashi refractor. We’ve removed both barriers. All you need is a browser and curiosity.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-graduation-cap"></i>
+        <h3>Learn by Doing</h3>
+        <p>Point the telescope yourself, choose filters, and see the results live. It’s the fastest way to understand how astrophotography works – no expensive trial and error.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-users"></i>
+        <h3>Community & Discovery</h3>
+        <p>Capture data for science, share your images with our growing community, or collaborate with other enthusiasts across the globe – all through a single platform.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-leaf"></i>
+        <h3>Sustainable Astronomy</h3>
+        <p>Instead of everyone buying their own equipment that sits idle 90% of the time, we share one world‑class rig efficiently. Less waste, more stars.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-hand-holding-heart"></i>
+        <h3>Inspiring the Next Generation</h3>
+        <p>Students, hobbyists, and dreamers who never imagined touching a telescope can now operate cutting‑edge hardware – and we love seeing their faces light up.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="equipment-section reveal">
-    <h2 class="section-title">Our Equipment</h2>
-    <div class="equipment-list">
-      <div class="equipment-item">
-        <h3>Takahashi FSQ-106ED</h3>
-        <p>Legendary apochromatic refractor for razor‑sharp wide fields.</p>
+    <h2 class="section-title">The Gear That Makes It Possible</h2>
+    <p class="section-subtitle">Every piece of equipment was chosen to deliver publication‑quality images – even from your browser.</p>
+    <div class="equipment-grid">
+      <div class="equipment-card">
+        <i class="fas fa-star"></i>
+        <h3>Takahashi FSQ‑106ED</h3>
+        <p>A legendary apochromatic refractor renowned for pinpoint stars across a wide field – the same telescope used by observatories worldwide.</p>
       </div>
-      <div class="equipment-item">
+      <div class="equipment-card">
+        <i class="fas fa-camera"></i>
         <h3>ASI2600MC Pro</h3>
-        <p>APS‑C cooled colour camera – perfect for deep‑sky imaging.</p>
+        <p>A cooled, 26‑megapixel colour camera that captures stunning detail on nebulae, galaxies, and comets without the complexity of monochrome sensors.</p>
       </div>
-      <div class="equipment-item">
-        <h3>10Micron GM2000</h3>
-        <p>Precision robotic mount with absolute encoders.</p>
+      <div class="equipment-card">
+        <i class="fas fa-dharmachakra"></i>
+        <h3>10Micron GM2000 HPS</h3>
+        <p>Absolute‑encoder robotic mount that tracks the sky with sub‑arcsecond precision – no guiding needed in most conditions.</p>
       </div>
-      <div class="equipment-item">
+      <div class="equipment-card">
+        <i class="fas fa-wifi"></i>
         <h3>ASIAIR Plus</h3>
-        <p>All‑in‑one controller for fully remote operations.</p>
+        <p>The brain of the observatory. It lets you control everything – focusing, plate‑solving, sequencing – from anywhere in the world, in real time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials-section reveal">
+    <h2 class="section-title">What Our Community Says</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p>“I live in the heart of Bangalore with Bortle 9 skies. RemoteScope gave me access to a pristine sky for the first time. I cried when I saw the Horsehead Nebula on my screen.”</p>
+        <div><strong>Arjun M.</strong> · Astrophotographer, Bengaluru</div>
+      </div>
+      <div class="testimonial-card">
+        <p>“As a student, I could never afford a mount or a cooled camera. RemoteScope let me capture M31 in full glory for my college project. The booking was seamless and the guidance phenomenal.”</p>
+        <div><strong>Priya S.</strong> · Astronomy Student, Delhi</div>
+      </div>
+      <div class="testimonial-card">
+        <p>“I’ve been doing astrophotography for years, but hauling gear every weekend was exhausting. Now I just book a slot, log in, and create magic from my couch. Pure joy.”</p>
+        <div><strong>Rajat K.</strong> · Amateur Astronomer, Pune</div>
       </div>
     </div>
   </section>
 
   <footer>
-    <p>© 2026 RemoteScope</p>
+    <p>© 2026 RemoteScope. Built with stardust and code, for everyone who looks up.</p>
   </footer>
   <button id="back-to-top" class="back-to-top">↑</button>
   <script src="script.js"></script>
