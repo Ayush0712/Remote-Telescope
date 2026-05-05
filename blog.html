@@ -11,19 +11,34 @@
 <body>
     <canvas id="stars-canvas"></canvas>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="booking.html">Book Now</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="blog.html" class="active">Blog</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="booking.html">Book Now</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+    <div class="menu-overlay" id="menu-overlay">
+    <div class="overlay-content">
+        <a href="index.html" class="overlay-link">Home</a>
+        <a href="booking.html" class="overlay-link">Book Now</a>
+        <a href="gallery.html" class="overlay-link">Gallery</a>
+        <a href="about.html" class="overlay-link">About</a>
+        <a href="blog.html" class="overlay-link">Blog</a>
+        <a href="contact.html" class="overlay-link">Contact</a>
+    </div>
+</div>
 
     <section class="page-hero">
         <h1>RemoteScope Journal</h1>
