@@ -652,8 +652,11 @@ select, input[type="date"], input[type="time"], input[type="email"] {
     padding: 1.5rem;
 }
 select option {
-    background: #0a0f1a;   /* solid dark background for the dropdown list */
-    color: #e4e8f0;        /* light text, same as your body text */
+    background: #0a0f1a;
+    color: #e4e8f0;
+    padding: 10px;             /* taller options on mobile */
+    font-size: 16px;
+    min-height: 40px;
 }
 
 /* Contact */
