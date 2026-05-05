@@ -196,22 +196,6 @@ document.addEventListener('DOMContentLoaded', loadGalleryData);document.addEvent
 // =============================================
 // 3. BLOG (dynamic posts)
 // =============================================
-const blogContainer = document.getElementById('blog-container');
-if (blogContainer) {
-    const posts = [
-        { title: 'First Light from Spiti', excerpt: 'Our first test image from the remote observatory...', image: 'https://placehold.co/600x300/0b0f19/6C63FF?text=First+Light' },
-        { title: 'Beginner DSO Targets', excerpt: 'Where to point the telescope for stunning results.', image: 'https://placehold.co/600x300/0b0f19/e942f5?text=DSO+Targets' }
-    ];
-    blogContainer.innerHTML = posts.map(post => `
-        <article class="blog-card">
-            <img src="${post.image}" alt="${post.title}">
-            <div class="blog-card-content">
-                <h3>${post.title}</h3>
-                <p>${post.excerpt}</p>
-            </div>
-        </article>
-    `).join('');
-}
 
 // =============================================
 // 4. BOOKING ENGINE (dynamic pricing, UPI)
