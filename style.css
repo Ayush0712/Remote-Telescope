@@ -1153,6 +1153,8 @@ section, .section, .features-section, .equipment-section,
     .carousel-track {
         gap: 0;                     /* remove the gap so the card fills the width */
         scroll-snap-type: x mandatory;
+        touch-action: pan-x pinch-zoom;  
+        -webkit-overflow-scrolling: touch;
     }
     .carousel-card {
         flex: 0 0 100%;             /* one card = 100% of the track */
@@ -1160,7 +1162,7 @@ section, .section, .features-section, .equipment-section,
         border-radius: 0;           /* optional – remove rounded corners on mobile for edge‑to‑edge look */
     }
     .carousel-card img {
-        height: 220px;              /* slightly taller for mobile screens */
+        height: 180px;              /* slightly taller for mobile screens */
     }
 }
 
@@ -1198,4 +1200,26 @@ select,
 /* Prevent iOS zoom on input focus */
 input, select, textarea {
     font-size: 16px !important;   /* must be ≥ 16px[reference:7] */
+}
+/* All multi-column grids collapse at the same breakpoint */
+@media (max-width: 900px) {
+    .flip-grid { grid-template-columns: repeat(2, 1fr); }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .equipment-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-3x8 { grid-template-columns: repeat(2, 1fr); }
+    .blog-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+    .flip-grid,
+    .features-grid,
+    .equipment-grid,
+    .grid-3x8,
+    .blog-grid,
+    .testimonial-grid {
+        grid-template-columns: 1fr;
+    }
+    .booking-outer {
+        grid-template-columns: 1fr;
+    }
 }
