@@ -26,9 +26,10 @@
     </nav>
 
     <div class="booking-container">
+        <!-- Left Column: Booking Form -->
         <div class="booking-form-panel">
             <h1>Configure Your Session</h1>
-            
+
             <div class="form-group">
                 <label><i class="fas fa-envelope"></i> Your Email</label>
                 <input type="email" id="user-email" placeholder="you@example.com" required>
@@ -42,6 +43,8 @@
                     <option value="rasa8" data-price="800">RASA 8 – ₹800/hr</option>
                     <option value="tak-fsq106" data-price="1000">Takahashi FSQ-106 – ₹1000/hr</option>
                 </select>
+                <!-- Telescope image preview -->
+                <img id="equipment-image" src="" alt="Telescope" style="display:none; width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-top:1rem;">
             </div>
 
             <div class="form-group">
@@ -101,20 +104,49 @@
         <div class="weather-panel" id="weather-panel">
             <h2><i class="fas fa-cloud-sun"></i> Spiti Weather</h2>
             <div class="weather-grid" id="weather-grid"></div>
+            <p style="font-size:0.7rem; text-align:center; margin-top:0.5rem; color:var(--text-secondary);">Data: Open-Meteo</p>
         </div>
     </div>
 
     <footer>
-        <p style="text-align: center; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Weather data powered by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" style="color: var(--accent);">Open-Meteo</a></p>
         <p>© 2026 RemoteScope. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
-    <!-- New inline script for API submission -->
     <script>
+        // ========== Telescope image mapping ==========
+        const equipmentImages = {
+            'redcat51': 'images/redcat51.jpg',
+            'esprit120': 'images/esprit120.jpg',
+            'rasa8': 'images/rasa8.jpg',
+            'tak-fsq106': 'images/tak-fsq106.jpg'
+        };
+
+        // Update price AND show/hide equipment image
+        const originalUpdatePrice = updatePrice; // keep reference to existing function (defined in script.js)
+        updatePrice = function() {
+            originalUpdatePrice(); // call existing price logic
+            const equipSelect = document.getElementById('equipment-select');
+            const img = document.getElementById('equipment-image');
+            const selectedValue = equipSelect.value;
+            if (equipmentImages[selectedValue]) {
+                img.src = equipmentImages[selectedValue];
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+        };
+
+        // After page load, trigger once to set initial image (if any)
+        window.addEventListener('DOMContentLoaded', () => {
+            // ensure updatePrice runs after all elements are ready
+            if (document.getElementById('equipment-select')) {
+                updatePrice();
+            }
+        });
+
         // ========== Real-time Booking API Submission ==========
-        // IMPORTANT: Replace this URL with your actual Tailscale Funnel endpoint
-        const BOOKING_API_URL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/book';
+        const BOOKING_API_URL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/book'; // <-- REPLACE with your actual Funnel URL
 
         function submitBookingAPI() {
             const email = document.getElementById('user-email').value.trim();
@@ -128,15 +160,25 @@
                 return;
             }
 
-            // Calculate duration in hours
             const start = new Date(`${date}T${startTime}:00`);
             let end = new Date(`${date}T${endTime}:00`);
-            if (end <= start) end.setDate(end.getDate() + 1); // overnight
+            if (end <= start) end.setDate(end.getDate() + 1);
             const duration = (end - start) / (1000 * 60 * 60);
             if (duration <= 0) {
                 msgDiv.textContent = '❌ End time must be after start time.';
                 return;
             }
+
+            // Gather selected equipment details
+            const equipSelect = document.getElementById('equipment-select');
+            const telescopeValue = equipSelect.value;
+            const telescopeName = equipSelect.options[equipSelect.selectedIndex].text;
+            const cameraSelect = document.getElementById('camera-select');
+            const cameraValue = cameraSelect.value;
+            const cameraName = cameraSelect.options[cameraSelect.selectedIndex].text;
+            const filterCheckboxes = document.querySelectorAll('.filter-checkboxes input:checked');
+            const filters = Array.from(filterCheckboxes).map(cb => cb.value.toUpperCase());
+            const dithering = document.getElementById('dither').checked;
 
             msgDiv.textContent = '⏳ Processing booking…';
 
@@ -144,7 +186,13 @@
                 email: email,
                 date: date,
                 start_time: startTime,
-                duration: duration.toString()
+                duration: duration.toString(),
+                telescope: telescopeValue,
+                telescope_name: telescopeName,
+                camera: cameraValue,
+                camera_name: cameraName,
+                filters: filters,
+                dithering: dithering
             };
 
             fetch(BOOKING_API_URL, {
