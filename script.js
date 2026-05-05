@@ -193,25 +193,6 @@ document.addEventListener('DOMContentLoaded', loadGalleryData);document.addEvent
     loadHeroBackground(); 
 });
 
-// Build dots
-const dotContainer = document.getElementById('carousel-dots');
-if (dotContainer) {
-    const updateDots = () => {
-        const cards = track.querySelectorAll('.carousel-card');
-        const activeIndex = Math.round(track.scrollLeft / (track.scrollWidth / cards.length));
-        dotContainer.innerHTML = '';
-        cards.forEach((_, i) => {
-            const dot = document.createElement('span');
-            dot.className = `carousel-dot ${i === activeIndex ? 'active' : ''}`;
-            dot.addEventListener('click', () => {
-                track.scrollTo({ left: i * cards[0].offsetWidth, behavior: 'smooth' });
-            });
-            dotContainer.appendChild(dot);
-        });
-    };
-    updateDots();
-    track.addEventListener('scroll', updateDots);
-}
 // =============================================
 // 3. BLOG (dynamic posts)
 // =============================================
