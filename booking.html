@@ -151,6 +151,33 @@ async function loadEquipmentOptions() {
                 ${eq.name} – ${eq.price}
             </option>
         `).join('');
+        // Check if the page was opened with a ?equip= parameter (from homepage)
+const urlParams = new URLSearchParams(window.location.search);
+const equipParam = urlParams.get('equip');
+if (equipParam) {
+    // Find and select the matching option
+    const option = select.querySelector(`option[value="${equipParam}"]`);
+    if (option) {
+        option.selected = true;
+    }
+}
+
+// Always call updatePrice after setting the selection
+if (typeof updatePrice === 'function') {
+    updatePrice();
+    // Also trigger the image change (if the event listener is set)
+    const img = document.getElementById('equipment-image');
+    if (img && window.__equipmentData) {
+        const eq = window.__equipmentData.find(e => e.equipParam === (equipParam || select.value));
+        if (eq && eq.imageBase) {
+            const basePath = `images/${eq.imageBase}`;
+            if (typeof applyImageFallback === 'function') {
+                applyImageFallback(img, basePath);
+                img.style.display = 'block';
+            }
+        }
+    }
+}
         // Store equipment data for image mapping
 window.__equipmentData = items;
 
