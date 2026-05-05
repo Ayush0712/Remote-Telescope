@@ -444,7 +444,7 @@ body::after {
     margin-bottom: 1.5rem;
 }
 .form-group {
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.8rem;
 }
 .form-group label {
     display: block;
@@ -452,7 +452,7 @@ body::after {
     color: var(--text-secondary);
     font-weight: 500;
 }
-select, input[type="date"], input[type="time"] {
+select, input[type="date"], input[type="time"], input[type="email"] {
     width: 100%;
     padding: 0.8rem;
     background: rgba(255,255,255,0.05);
@@ -945,4 +945,29 @@ img, video, canvas {
     .menu-toggle {
         display: flex;        /* show hamburger */
     }
+}
+/* Container takes exactly the visible height minus navbar & footer */
+.booking-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    height: calc(100vh - 160px);   /* adjust 160px based on navbar + footer height */
+}
+
+/* Left panel stays visible and does not scroll */
+.booking-form-panel {
+    flex: 1 1 auto;
+    overflow: visible;           /* no scrollbar */
+    padding: 2rem;
+}
+
+/* Right panel gets its own scrollbar */
+.weather-panel {
+    flex: 0 0 350px;            /* fixed width */
+    max-height: 100%;           /* will scroll if content overflows */
+    overflow-y: auto;
+    padding: 1.5rem;
 }
