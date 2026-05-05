@@ -265,6 +265,9 @@
                 `;
             }
         }
+        if (typeof updatePrice === 'function' && document.getElementById('equipment-select')) {
+    updatePrice();   // forces the image to show on page load
+}
 
         // Start everything once the page is ready
         window.addEventListener('DOMContentLoaded', () => {
