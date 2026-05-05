@@ -161,6 +161,9 @@ async function loadCarouselTargets() {
                 </div>
             </div>
         `).join('');
+        // Reset to first card and build dots
+track.scrollLeft = 0;
+updateCarouselDots();
     } catch (err) {
         console.warn('Monthly targets failed, showing fallback');
         // Simple fallback with a few hard‑coded targets (optional)
@@ -189,44 +192,47 @@ const rightBtn = document.getElementById('carousel-right');
     if (!track) return;
 // Build dot navigation
 // Build dot navigation (using centre proximity)
-const dotContainer = document.getElementById('carousel-dots');
-if (dotContainer) {
-    const updateDots = () => {
-        const cards = track.querySelectorAll('.carousel-card');
-        if (!cards.length) return;
+function updateCarouselDots() {
+    const dotContainer = document.getElementById('carousel-dots');
+    if (!dotContainer) return;
 
-        // Find the card closest to the centre of the visible area
-        const trackCenter = track.scrollLeft + track.clientWidth / 2;
-        let activeIndex = 0;
-        let minDistance = Infinity;
+    const track = document.getElementById('carousel-track');
+    if (!track) return;
 
-        cards.forEach((card, i) => {
-            const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-            const distance = Math.abs(trackCenter - cardCenter);
-            if (distance < minDistance) {
-                minDistance = distance;
-                activeIndex = i;
-            }
+    const cards = track.querySelectorAll('.carousel-card');
+    if (!cards.length) return;
+
+    const trackCenter = track.scrollLeft + track.clientWidth / 2;
+    let activeIndex = 0;
+    let minDistance = Infinity;
+
+    cards.forEach((card, i) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const distance = Math.abs(trackCenter - cardCenter);
+        if (distance < minDistance) {
+            minDistance = distance;
+            activeIndex = i;
+        }
+    });
+
+    dotContainer.innerHTML = '';
+    cards.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = `carousel-dot ${i === activeIndex ? 'active' : ''}`;
+        dot.addEventListener('click', () => {
+            cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         });
-
-        // Rebuild dots
-        dotContainer.innerHTML = '';
-        cards.forEach((_, i) => {
-            const dot = document.createElement('span');
-            dot.className = `carousel-dot ${i === activeIndex ? 'active' : ''}`;
-            dot.addEventListener('click', () => {
-                // Scroll the target card smoothly into view
-                cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            });
-            dotContainer.appendChild(dot);
-        });
-    };
-
-    updateDots();
-    track.addEventListener('scroll', updateDots);
-    // Recalculate on window resize (in case card sizes change)
-    window.addEventListener('resize', updateDots);
+        dotContainer.appendChild(dot);
+    });
 }
+
+// Attach scroll event (only once)
+document.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById('carousel-track');
+    if (track) {
+        track.addEventListener('scroll', updateCarouselDots);
+    }
+});
 
     // Helper: get width of one carousel card
     function getCardWidth() {
