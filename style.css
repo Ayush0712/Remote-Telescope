@@ -1039,6 +1039,16 @@ img, video, canvas {
         max-height: none;
     }
 }
+
+.flip-card:hover,
+.carousel-card:hover,
+.feature-card:hover,
+.testimonial-card:hover,
+.equipment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(108, 99, 255, 0.25);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
 /* ============================================
    BEST TARGETS CAROUSEL
    ============================================ */
