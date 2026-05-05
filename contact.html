@@ -11,46 +11,75 @@
 <body>
     <canvas id="stars-canvas"></canvas>
 
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </button>
-        <ul class="nav-links" id="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="booking.html">Book Now</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </div>
-</nav>
+    <!-- Full‑screen background (Pillars of Creation) -->
+    <div class="page-background" style="background-image: url('images/pillars-of-creation.jpg');"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-satellite"></i> RemoteScope</a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="booking.html">Book Now</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="menu-overlay" id="menu-overlay">
-    <div class="overlay-content">
-        <a href="index.html" class="overlay-link">Home</a>
-        <a href="booking.html" class="overlay-link">Book Now</a>
-        <a href="gallery.html" class="overlay-link">Gallery</a>
-        <a href="about.html" class="overlay-link">About</a>
-        <a href="blog.html" class="overlay-link">Blog</a>
-        <a href="contact.html" class="overlay-link">Contact</a>
+        <div class="overlay-content">
+            <a href="index.html" class="overlay-link">Home</a>
+            <a href="booking.html" class="overlay-link">Book Now</a>
+            <a href="gallery.html" class="overlay-link">Gallery</a>
+            <a href="about.html" class="overlay-link">About</a>
+            <a href="blog.html" class="overlay-link">Blog</a>
+            <a href="contact.html" class="overlay-link">Contact</a>
+        </div>
     </div>
-</div>
 
     <section class="page-hero">
         <h1>Get in Touch</h1>
-        <p>Questions? Custom requests? Just say hello.</p>
+        <p>Questions, custom bookings, collaborations — let’s talk.</p>
     </section>
 
     <form class="contact-form" id="contact-form">
-        <input type="text" placeholder="Your Name" required>
-        <input type="email" placeholder="Email" required>
-        <input type="text" placeholder="Subject">
-        <textarea placeholder="Your Message" rows="6" required></textarea>
-        <button type="submit" class="btn-primary">Send Message</button>
+        <div class="form-row">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Full Name *</label>
+                <input type="text" id="name" required placeholder="Your full name">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email *</label>
+                <input type="email" id="email" required placeholder="you@example.com">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label><i class="fas fa-globe-asia"></i> Country *</label>
+                <input type="text" id="country" required placeholder="India, USA, etc.">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-mobile-alt"></i> Mobile (optional)</label>
+                <input type="tel" id="mobile" placeholder="+91 12345 67890">
+            </div>
+        </div>
+        <div class="form-group">
+            <label><i class="fas fa-heading"></i> Subject *</label>
+            <input type="text" id="subject" required placeholder="What's this about?">
+        </div>
+        <div class="form-group">
+            <label><i class="fas fa-comment"></i> Message *</label>
+            <textarea id="message" rows="6" required placeholder="Tell us how we can help…"></textarea>
+        </div>
+        <button type="submit" class="btn-primary full-width">Send Message</button>
+        <div id="form-message" style="text-align:center; margin-top:1rem;"></div>
     </form>
 
     <footer>
@@ -58,5 +87,41 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        const CONTACT_API = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/contact';   // <-- use your real funnel URL
+
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msgDiv = document.getElementById('form-message');
+            msgDiv.textContent = '⏳ Sending…';
+
+            const payload = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                country: document.getElementById('country').value.trim(),
+                mobile: document.getElementById('mobile').value.trim(),
+                subject: document.getElementById('subject').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+
+            try {
+                const resp = await fetch(CONTACT_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await resp.json();
+                if (data.error) {
+                    msgDiv.textContent = '❌ ' + data.error;
+                } else {
+                    msgDiv.textContent = '✅ Message sent! We’ll get back to you soon.';
+                    this.reset();
+                }
+            } catch (err) {
+                msgDiv.textContent = '❌ Network error. Please try again.';
+                console.error(err);
+            }
+        });
+    </script>
 </body>
 </html>
