@@ -132,132 +132,99 @@
     <footer>
         <p>© 2026 RemoteScope. All rights reserved.</p>
     </footer>
-
     <script src="script.js"></script>
     <script>
-        // Load equipment from the shared JSON and populate the dropdown
-async function loadEquipmentOptions() {
-    const select = document.getElementById('equipment-select');
-    if (!select) return;
+        // ------- Load equipment from shared JSON & populate dropdown -------
+        async function loadEquipmentOptions() {
+            const select = document.getElementById('equipment-select');
+            if (!select) return;
 
-    try {
-        const resp = await fetch('equipment.json');
-        if (!resp.ok) throw new Error('Failed to load equipment');
-        const items = await resp.json();
+            try {
+                const resp = await fetch('equipment.json');
+                if (!resp.ok) throw new Error('Failed to load equipment');
+                const items = await resp.json();
 
-        // Build options from JSON
-        select.innerHTML = items.map(eq => `
-            <option value="${eq.equipParam}" data-price="${eq.price.replace('₹', '').replace('/hr', '').trim()}">
-                ${eq.name} – ${eq.price}
-            </option>
-        `).join('');
-        // Check if the page was opened with a ?equip= parameter (from homepage)
-const urlParams = new URLSearchParams(window.location.search);
-const equipParam = urlParams.get('equip');
-if (equipParam) {
-    // Find and select the matching option
-    const option = select.querySelector(`option[value="${equipParam}"]`);
-    if (option) {
-        option.selected = true;
-    }
-}
+                // Store globally so other functions can use it
+                window.__equipmentData = items;
 
-// Always call updatePrice after setting the selection
-if (typeof updatePrice === 'function') {
-    updatePrice();
-    // Also trigger the image change (if the event listener is set)
-    const img = document.getElementById('equipment-image');
-    if (img && window.__equipmentData) {
-        const eq = window.__equipmentData.find(e => e.equipParam === (equipParam || select.value));
-        if (eq && eq.imageBase) {
-            const basePath = `images/${eq.imageBase}`;
-            if (typeof applyImageFallback === 'function') {
-                applyImageFallback(img, basePath);
-                img.style.display = 'block';
+                // Build <option> elements
+                select.innerHTML = items.map(eq => `
+                    <option value="${eq.equipParam}" data-price="${eq.price.replace('₹', '').replace('/hr', '').trim()}">
+                        ${eq.name} – ${eq.price}
+                    </option>
+                `).join('');
+
+                // Pre‑select from URL (?equip=...) if present
+                const urlParams = new URLSearchParams(window.location.search);
+                const equipParam = urlParams.get('equip');
+                if (equipParam) {
+                    const option = select.querySelector(`option[value="${equipParam}"]`);
+                    if (option) option.selected = true;
+                }
+
+                // Show the correct image for the currently selected telescope
+                updateEquipmentImage();
+
+                // Attach change listener for future selections
+                select.addEventListener('change', updateEquipmentImage);
+
+                // Call updatePrice to refresh the total (now that options exist)
+                if (typeof updatePrice === 'function') updatePrice();
+            } catch (err) {
+                console.error('Could not load equipment options:', err);
             }
         }
-    }
-}
-        // Store equipment data for image mapping
-window.__equipmentData = items;
 
-// Set image when user selects a telescope
-select.addEventListener('change', function() {
-    const selectedValue = this.value;
-    const img = document.getElementById('equipment-image');
-    if (!img || !window.__equipmentData) return;
+        // ------- Update the telescope preview image from JSON data -------
+        function updateEquipmentImage() {
+            const select = document.getElementById('equipment-select');
+            const img = document.getElementById('equipment-image');
+            if (!select || !img || !window.__equipmentData) return;
 
-    const eq = window.__equipmentData.find(e => e.equipParam === selectedValue);
-    if (eq && eq.imageBase) {
-        // Use the same image path as the homepage
-        const basePath = `images/${eq.imageBase}`;
-        // Use the fallback function from script.js (available globally)
-        if (typeof applyImageFallback === 'function') {
-            applyImageFallback(img, basePath);
-            img.style.display = 'block';
-        } else {
-            // Simple fallback if the function isn't available
-            img.src = basePath + '.jpg';
-            img.style.display = 'block';
+            const selectedValue = select.value;
+            const eq = window.__equipmentData.find(e => e.equipParam === selectedValue);
+            if (eq && eq.imageBase) {
+                const basePath = `images/${eq.imageBase}`;
+                if (typeof applyImageFallback === 'function') {
+                    applyImageFallback(img, basePath);
+                    img.style.display = 'block';
+                } else {
+                    // Simple fallback if applyImageFallback isn't available
+                    img.src = basePath + '.jpg';
+                    img.style.display = 'block';
+                }
+            } else {
+                img.style.display = 'none';
+            }
         }
-    } else {
-        img.style.display = 'none';
-    }
-});
 
-// Trigger a change event to load the initial image
-select.dispatchEvent(new Event('change'));
-
-        // After options are loaded, call updatePrice to set initial values
-        if (typeof updatePrice === 'function') updatePrice();
-    } catch (err) {
-        console.error('Could not load equipment options:', err);
-        // Fallback: keep the existing hard‑coded options (optional)
-    }
-}
-
-// Call it on page load
-window.addEventListener('DOMContentLoaded', loadEquipmentOptions);
-        // ---- equipment image preview ----
-        const equipmentImages = {
-            'redcat51': 'images/redcat51.jpg',
-            'esprit120': 'images/esprit120.jpg',
-            'rasa8': 'images/rasa8.jpg',
-            'tak-fsq106': 'images/tak-fsq106.jpg'
-        };
+        // Override the original updatePrice to also call the image updater
         if (typeof updatePrice === 'function') {
             const originalUpdatePrice = updatePrice;
             updatePrice = function() {
                 originalUpdatePrice();
-                const equipSelect = document.getElementById('equipment-select');
-                const img = document.getElementById('equipment-image');
-                if (equipSelect && img) {
-                    const val = equipSelect.value;
-                    if (equipmentImages[val]) {
-                        img.src = equipmentImages[val];
-                        img.style.display = 'block';
-                    } else {
-                        img.style.display = 'none';
-                    }
-                }
+                // After the price is updated, make sure the image matches the current selection
+                updateEquipmentImage();
             };
+        } else {
+            // If updatePrice doesn't exist (shouldn't happen, but just in case)
+            function updatePrice() {
+                updateEquipmentImage();
+            }
         }
 
-        // ---- Booking API ----
+        // ------- Booking API -------
         const BOOKING_API_URL = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000/book';
-
         function submitBookingAPI() {
             const email = document.getElementById('user-email').value.trim();
             const date = document.getElementById('booking-date').value;
             const startTime = document.getElementById('start-time').value;
             const endTime = document.getElementById('end-time').value;
             const msgDiv = document.getElementById('api-message');
-
             if (!email || !date || !startTime || !endTime) {
                 msgDiv.textContent = '❌ Please fill in all fields.';
                 return;
             }
-
             const start = new Date(`${date}T${startTime}:00`);
             let end = new Date(`${date}T${endTime}:00`);
             if (end <= start) end.setDate(end.getDate() + 1);
@@ -266,7 +233,6 @@ window.addEventListener('DOMContentLoaded', loadEquipmentOptions);
                 msgDiv.textContent = '❌ End time must be after start time.';
                 return;
             }
-
             const equipSelect = document.getElementById('equipment-select');
             const telescopeVal = equipSelect.value;
             const telescopeName = equipSelect.options[equipSelect.selectedIndex].text;
@@ -275,7 +241,6 @@ window.addEventListener('DOMContentLoaded', loadEquipmentOptions);
             const cameraName = cameraSelect.options[cameraSelect.selectedIndex].text;
             const filters = Array.from(document.querySelectorAll('.filter-checkboxes input:checked')).map(cb => cb.value.toUpperCase());
             const dithering = document.getElementById('dither').checked;
-
             msgDiv.textContent = '⏳ Processing booking…';
             fetch(BOOKING_API_URL, {
                 method: 'POST',
@@ -298,30 +263,25 @@ window.addEventListener('DOMContentLoaded', loadEquipmentOptions);
             });
         }
 
-        // ---- Best Targets (dynamic from APOD with image proxy) ----
+        // ------- Best Targets (APOD with proxy) -------
         async function loadTargets() {
             const grid = document.getElementById('targets-grid');
             const monthSpan = document.getElementById('target-month');
             if (!grid) return;
-
             const now = new Date();
             const monthName = now.toLocaleString('default', { month: 'long' });
             monthSpan.textContent = `for ${monthName}`;
-
             const proxyBase = 'https://ayush-dell-g15-5520.tail96dcc4.ts.net:10000';
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
-            // Use today as the end date to avoid future dates
             const todayStr = now.toISOString().split('T')[0];
             const metaUrl = `${proxyBase}/apod-proxy?start_date=${year}-${month}-01&end_date=${todayStr}`;
-
             try {
                 const resp = await fetch(metaUrl);
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
                 const data = await resp.json();
                 const entries = (data || []).filter(e => e.media_type === 'image').slice(0, 8);
-                if (entries.length === 0) throw new Error('No image entries found');
-
+                if (entries.length === 0) throw new Error('No images');
                 grid.innerHTML = entries.map(e => {
                     const imgUrl = `${proxyBase}/apod-image?url=${encodeURIComponent(e.url)}`;
                     return `
@@ -335,8 +295,6 @@ window.addEventListener('DOMContentLoaded', loadEquipmentOptions);
                     `;
                 }).join('');
             } catch (err) {
-                console.warn('Dynamic targets failed, showing static fallback');
-                // Static fallback – replace with your own images later
                 grid.innerHTML = `
                     <div class="target-card"><img src="https://placehold.co/300x200/1a1f35/6C63FF?text=M101" alt="M101"><div class="target-card-body"><h4>M101 Pinwheel</h4><p>Face‑on spiral, galaxy season favourite</p></div></div>
                     <div class="target-card"><img src="https://placehold.co/300x200/1a1f35/6C63FF?text=Orion" alt="Orion"><div class="target-card-body"><h4>Orion Nebula</h4><p>Winter classic, still stunning</p></div></div>
@@ -344,13 +302,10 @@ window.addEventListener('DOMContentLoaded', loadEquipmentOptions);
                 `;
             }
         }
-        if (typeof updatePrice === 'function' && document.getElementById('equipment-select')) {
-    updatePrice();   // forces the image to show on page load
-}
 
-        // Start everything once the page is ready
+        // ------- Initialise everything -------
         window.addEventListener('DOMContentLoaded', () => {
-            if (typeof updatePrice === 'function') updatePrice();
+            loadEquipmentOptions();   // loads dropdown + image from JSON
             loadTargets();
         });
     </script>
