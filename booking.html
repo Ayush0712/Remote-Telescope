@@ -138,27 +138,30 @@
     <script>
         // ------- Load equipment from shared JSON & populate dropdown -------
         // ------- Update the telescope preview image from JSON data -------
-        function updateEquipmentImage() {
-            const select = document.getElementById('equipment-select');
-            const img = document.getElementById('equipment-image');
-            if (!select || !img || !window.__equipmentData) return;
+function updateEquipmentImage() {
+    const select = document.getElementById('equipment-select');
+    const img = document.getElementById('equipment-image');
+    const wrapper = document.querySelector('.equipment-image-wrapper');
+    if (!select || !img || !window.__equipmentData) return;
 
-            const selectedValue = select.value;
-            const eq = window.__equipmentData.find(e => e.equipParam === selectedValue);
-            if (eq && eq.imageBase) {
-                const basePath = `images/${eq.imageBase}`;
-                if (typeof applyImageFallback === 'function') {
-                    applyImageFallback(img, basePath);
-                    img.style.display = 'block';
-                } else {
-                    // Simple fallback if applyImageFallback isn't available
-                    img.src = basePath + '.jpg';
-                    img.style.display = 'block';
-                }
-            } else {
-                img.style.display = 'none';
-            }
+    const selectedValue = select.value;
+    const eq = window.__equipmentData.find(e => e.equipParam === selectedValue);
+    if (eq && eq.imageBase) {
+        const basePath = `images/${eq.imageBase}`;
+        if (typeof applyImageFallback === 'function') {
+            applyImageFallback(img, basePath);
+        } else {
+            img.src = basePath + '.jpg';
         }
+        // Show both the image and the wrapper
+        img.style.display = 'block';
+        img.style.visibility = 'visible';  // override any hidden state
+        if (wrapper) wrapper.style.display = 'block';
+    } else {
+        img.style.display = 'none';
+        if (wrapper) wrapper.style.display = 'none';
+    }
+}
 async function loadEquipmentOptions() {
     const select = document.getElementById('equipment-select');
     if (!select) return;
