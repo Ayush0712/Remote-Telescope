@@ -1313,3 +1313,12 @@ input, select, textarea {
     background: var(--accent);
     transform: scale(1.2);
 }
+.equipment-image-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;        /* or 4 / 3, depending on your photos */
+    margin-top: 1rem;
+    border-radius: 8px;
+    overflow: hidden;            /* keeps the image from spilling */
+    background: var(--card-bg);  /* placeholder color while loading */
+    display: none;               /* initially hidden – shown by JS when a scope is selected */
+}
